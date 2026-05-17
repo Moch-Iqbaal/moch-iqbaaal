@@ -16,11 +16,8 @@ export function WelcomeModal() {
   const [step, setStep] = useState(1);
 
   useEffect(() => {
-    const hasSeenOnboarding = localStorage.getItem("hasSeenOnboarding");
-
-    if (!hasSeenOnboarding) {
-      setOpen(true);
-    }
+    // Langsung buka setiap kali website dibuka
+    setOpen(true);
   }, []);
 
   const nextStep = () => {
@@ -28,7 +25,7 @@ export function WelcomeModal() {
       setStep(step + 1);
     } else {
       setOpen(false);
-      localStorage.setItem("hasSeenOnboarding", "true");
+      setStep(1); // reset step biar kalau dibuka lagi mulai dari awal
     }
   };
 
@@ -39,7 +36,6 @@ export function WelcomeModal() {
         "Sorry, kalau My Web ini tampilannya alakadarnya saja. Tapi Kamu bisa klik next untuk melihat info kelanjutannya.",
       icon: "👋",
     },
-
     {
       title: "Kenalan Dulu, Yuk!",
       instagram: "https://www.instagram.com/m.iqbaaal_3/",
@@ -48,7 +44,6 @@ export function WelcomeModal() {
         "Kamu sudah di bagian info ke 2, maka dari itu kamu boleh(sunnah) saja follow My sosmed untuk kenal lebih dekat dengan Sya...:",
       icon: "🚨",
     },
-
     {
       title: "Let's Collaborate!",
       description:
@@ -87,10 +82,9 @@ export function WelcomeModal() {
               </DialogHeader>
 
               {/* SOCIAL MEDIA BUTTON */}
-              {(steps[step - 1].instagram ||
-                steps[step - 1].facebook) && (
+              {(steps[step - 1].instagram || steps[step - 1].facebook) && (
                 <div className="flex flex-col gap-3 pt-2">
-                  
+
                   {/* INSTAGRAM */}
                   {steps[step - 1].instagram && (
                     <a
@@ -99,7 +93,7 @@ export function WelcomeModal() {
                       rel="noopener noreferrer"
                       className="text-center px-4 py-2 border border-white/20 text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300"
                     >
-                      Instagram - (@m.iqbaaal_3)  
+                      Instagram - (@m.iqbaaal_3)
                     </a>
                   )}
 
@@ -119,14 +113,13 @@ export function WelcomeModal() {
             </motion.div>
           </AnimatePresence>
 
+          {/* STEP INDICATOR */}
           <div className="flex justify-center gap-2 mt-8">
             {[1, 2, 3].map((s) => (
               <div
                 key={s}
                 className={`h-1 w-8 transition-all ${
-                  s === step
-                    ? "bg-primary"
-                    : "bg-border/40"
+                  s === step ? "bg-primary" : "bg-border/40"
                 }`}
               />
             ))}
@@ -138,9 +131,7 @@ export function WelcomeModal() {
             onClick={nextStep}
             className="w-full font-mono uppercase tracking-widest rounded-none h-12"
           >
-            {step === 3
-              ? "Mulai Eksplorasi"
-              : "Next"}
+            {step === 3 ? "Mulai Eksplorasi" : "Next"}
           </Button>
         </DialogFooter>
       </DialogContent>
