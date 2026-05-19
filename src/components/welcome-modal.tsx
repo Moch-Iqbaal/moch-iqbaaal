@@ -16,8 +16,16 @@ export function WelcomeModal() {
   const [step, setStep] = useState(1);
 
   useEffect(() => {
-    // Langsung buka setiap kali website dibuka
-    setOpen(true);
+    // Cek apakah user sedang di halaman utama "/"
+    const isHomePage = window.location.pathname === "/";
+
+    // Cek apakah pop up sudah pernah muncul di sesi ini
+    const hasSeenThisSession = sessionStorage.getItem("hasSeenWelcome");
+
+    // Hanya tampilkan kalau di halaman utama DAN belum muncul di sesi ini
+    if (isHomePage && !hasSeenThisSession) {
+      setOpen(true);
+    }
   }, []);
 
   const nextStep = () => {
@@ -25,8 +33,19 @@ export function WelcomeModal() {
       setStep(step + 1);
     } else {
       setOpen(false);
-      setStep(1); // reset step biar kalau dibuka lagi mulai dari awal
+      setStep(1);
+      // Tandai sudah muncul di sesi ini
+      sessionStorage.setItem("hasSeenWelcome", "true");
     }
+  };
+
+  // Kalau user klik tombol X (close), juga tandai sudah muncul
+  const handleOpenChange = (val: boolean) => {
+    if (!val) {
+      sessionStorage.setItem("hasSeenWelcome", "true");
+      setStep(1);
+    }
+    setOpen(val);
   };
 
   const steps = [
@@ -47,13 +66,13 @@ export function WelcomeModal() {
     {
       title: "Let's Collaborate!",
       description:
-        "''Senjata yang paling ampuh yaitu benda yang sedang Anda pegang saat ini.'' (MochIqbal - Founder's Groups)",
+        "''Senjata yang paling ampuh yaitu benda yang sedang Anda pegang saat ini.'' (MochIqball — Founder's Groups)",
       icon: "🚀",
     },
   ];
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[425px] border-border/40 p-0 overflow-hidden rounded-none">
         <div className="relative p-8">
           <AnimatePresence mode="wait">
