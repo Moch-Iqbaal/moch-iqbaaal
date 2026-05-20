@@ -1,11 +1,13 @@
-import { Mail, Github, Twitter, Linkedin, Shield, Instagram } from "lucide-react";
+import { Mail, Github, Twitter, Linkedin, Shield, Instagram, VoicemailIcon, Facebook } from "lucide-react";
 
 export default function Contacts() {
   const socials = [
-    { name: "Email", icon: Mail, value: "hello@iqbal.co", href: "mailto:hello@iqbaal.info" },
-    { name: "GitHub", icon: Github, value: "github.com/Moch-Iqbaal", href: "https://github.com" },
+    { name: "Email", icon: Mail, value: "muh.maulanaiqbal18@gmail.com", href: "mailto:muh.maulanaiqbal18@gmail.com" },
+    { name: "Voicemail", icon: VoicemailIcon, value: "muhm.iqbal@proton.me", href: "mailto:muhm.iqbal@proton.me" },
+    { name: "GitHub", icon: Github, value: "Moch-Iqbaal", href: "https://github.com/Moch-Iqbaal" },
     { name: "Instagram", icon: Instagram, value: "@m.iqbaaal_3", href: "https://www.instagram.com/m.iqbaaal_3/" },
-    { name: "LinkedIn", icon: Linkedin, value: "linkedin.com/in/iqbal", href: "https://linkedin.com" },
+    { name: "Facebook", icon: Facebook, value: "Baal Iqq", href: "https://www.facebook.com/INIAKUNABAIDEH.TQ" },
+    { name: "LinkedIn", icon: Linkedin, value: "Muhamad Maulana Iqbal", href: "https://www.linkedin.com/in/muhamad-maulana-iqbal/" },
     { name: "PGP Key", icon: Shield, value: "Download Key", href: "#" },
   ];
 

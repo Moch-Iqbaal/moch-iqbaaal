@@ -1,8 +1,5 @@
-import { useEffect, useState, useRef } from "react";
-
-// ==========================================
-// CHATBOT DATA & LOGIC
-// ==========================================
+import { title } from "process";
+import { useEffect, useState, useRef, use } from "react";
 
 const QNA = [
   {
@@ -241,6 +238,10 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    window.scrollTo({top: 0, behavior: "smooth"});
+  }, []);
+
+  useEffect(() => {
     const fetchBTC = async () => {
       try {
         const res = await fetch(
@@ -266,7 +267,7 @@ export default function Home() {
   return (
     <div className="space-y-12">
 
-      {/* JUMBOTRON / HERO IMAGE */}
+      {/* 1. JUMBOTRON / HERO IMAGE */}
       <section className="w-full -mx-6 md:-mx-12">
         <div className="relative w-full h-[300px] md:h-[480px] overflow-hidden">
           <img
@@ -278,9 +279,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* MUSIC PLAYER */}
-      <section className="mt-8 flex justify-start">
-        <div className="w-full max-w-md border border-border bg-card backdrop-blur-md p-4 rounded-xl">
+      {/* 2. MUSIC PLAYER */}
+      <section className="flex justify-start">
+        <div className="w-full max-w-md border border-border bg-card p-4 rounded-xl">
           <div className="flex items-center justify-between mb-3">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Now Playing</p>
@@ -296,20 +297,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* HEADLINE */}
+      {/* 3. HEADLINE */}
       <section className="space-y-6">
         <h1 className="text-5xl md:text-7xl font-sans tracking-tightest leading-none">
-          TROUBLE MAKER. <br />
-          <span className="font-mono text-muted-foreground italic">SYSTEM BREAKER.</span>
+          —TROUBLE MAKER, <br />
+          <span className="font-mono text-muted-foreground italic">SYSTEM BREAKER &</span> <br />
+          <span className="text-foreground">PROBLEM SOLVER.</span>
         </h1>
         <p className="text-xl md:text-2xl text-muted-foreground font-sans max-w-2xl leading-relaxed">
           I build systems to understand how they break. A developer by day,
-          and a security advocate by choice. Focused on digital privacy,
+          and a security advocate by choice. Focused on digital privacy, Blockchain/Cryptocurrency, 
           OSINT, and ethical troubleshooting.
         </p>
       </section>
 
-      {/* RECENT ACTIVITY */}
+      {/* 4. RECENT ACTIVITY */}
       <section className="space-y-8">
         <div className="flex items-center gap-4">
           <span className="font-mono text-xs uppercase tracking-widest opacity-40">Recent Activity</span>
@@ -318,19 +320,34 @@ export default function Home() {
         <div className="grid gap-8">
           {[
             {
-              title: "Digital Privacy Advocacy",
-              desc: "Researching data protection laws and their implementation in Southeast Asia.",
-              date: "2024",
+              title: "Blockchain Research & Development Applications",
+              desc: "Exploring decentralized applications and smart contract security in the crypto space.",
+              date: "2025",
             },
             {
-              title: "OSINT Framework Development",
-              desc: "Building tools for investigative journalism and fact-checking.",
-              date: "2023",
+              title: "Build Ai LLM Research & Modelling in Local Environment",
+              desc: "Experimenting with local LLMs for AI research and development, focusing on privacy-preserving techniques.",
+              date: "2025",
+            },
+            {
+              title: "Digital Privacy Advocacy",
+              desc: "Researching data protection laws and their implementation in Indonesian.",
+              date: "2024",
             },
             {
               title: "System Troubleshooting",
               desc: "Consulting for startups on scalable architecture and security hardening.",
               date: "2023",
+            },
+            {
+              title: "See & Learn Case Leaked Data PDN Indonesian",
+              desc: "Analyzing the implications of the PDN data leak and how to protect against similar breaches.",
+              date: "2023",
+            },
+            {
+              title: "Search Bug Bounty Programs & Write-ups in Social Media",
+              desc: "Sharing insights and write-ups from bug bounty programs to help others learn about ethical hacking and security research.",
+              date: "2022",
             },
           ].map((item, i) => (
             <div key={i} className="group cursor-pointer">
@@ -344,7 +361,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* RECENT INFO MARKET */}
+      {/* 5. RECENT INFO MARKET */}
       <section className="space-y-8">
         <div className="flex items-center gap-4">
           <span className="font-mono text-xs uppercase tracking-widest opacity-40">Recent Info Market</span>
@@ -355,9 +372,6 @@ export default function Home() {
           <p className="text-muted-foreground leading-relaxed">
             A platform for viewing crypto market information and macroeconomic sentiment from various trusted sources. 👇
           </p>
-
-          {/* BTC PRICE WIDGET */}
-          
           <a
             href="https://crypto-pulse-174.preview.emergentagent.com/"
             target="_blank"
@@ -397,21 +411,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CHATBOT SECTION */}
-      <section className="space-y-8">
+      {/* 6. CHATBOT */}
+      <section className="space-y-6">
         <div className="flex items-center gap-4">
+          <span className="font-mono text-xs uppercase tracking-widest opacity-40">AI Assistant</span>
           <div className="h-px flex-1 bg-border/40"></div>
         </div>
-        <div className="grid gap-6">
-          <h1 className="text-2xl font-bold">ASISTEN CHATBOT AI MY WEB PERSONAL—</h1>
-          <p className="text-muted-foreground leading-relaxed">
-            You can use this website's AI assistant chatbot feature to make it easier to find information on Iqbaal's personal site.
-          </p>
-          <ChatBot />
-        </div>
+        <h1 className="text-2xl font-bold">ASISTEN CHATBOT AI MY WEB PERSONAL—</h1>
+        <p className="text-muted-foreground leading-relaxed">
+          You can use this website's AI assistant chatbot feature to make it easier to find information on Iqbaal's personal site.
+        </p>
+        <ChatBot />
       </section>
 
-      {/* NAVIGATION LINKS */}
+      {/* 7. NAVIGATION LINKS */}
       <div className="pt-12">
         <a href="/collaborate" className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-tighter hover:gap-4 transition-all">
           View all projects <span>&rarr;</span>
