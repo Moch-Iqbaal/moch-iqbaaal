@@ -57,9 +57,9 @@ _Dikirim via collaborate.moch-iqbal.info_`;
           <span className="italic opacity-40">TOGETHER.</span>
         </h2>
         <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
-          I'm always looking for interesting projects that challenge the status quo.
-          If you have a project that requires deep technical insight or security auditing,
-          let's talk.
+          Saya selalu mencari proyek-proyek menarik yang menantang status quo.
+          Jika Anda memiliki proyek yang membutuhkan wawasan teknis mendalam atau audit keamanan,
+          mari kita bicara.
         </p>
       </section>
 

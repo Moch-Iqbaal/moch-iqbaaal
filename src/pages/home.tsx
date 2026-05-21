@@ -305,9 +305,9 @@ export default function Home() {
           <span className="text-foreground">PROBLEM SOLVER.</span>
         </h1>
         <p className="text-xl md:text-2xl text-muted-foreground font-sans max-w-2xl leading-relaxed">
-          I build systems to understand how they break. A developer by day,
-          and a security advocate by choice. Focused on digital privacy, Blockchain/Cryptocurrency, 
-          OSINT, and ethical troubleshooting.
+          Saya membangun sistem untuk memahami bagaimana sistem tersebut bisa rusak. 
+          Seorang developer day to day, dan seorang advokat keamanan atas pilihan sendiri. 
+          Berfokus pada privasi digital, Blockchain/Cryptocurrency, OSINT, dan pemecahan masalah yang etis.
         </p>
       </section>
 
@@ -321,32 +321,32 @@ export default function Home() {
           {[
             {
               title: "Blockchain Research & Development Applications",
-              desc: "Exploring decentralized applications and smart contract security in the crypto space.",
+              desc: "Eksplorisasi aplikasi terdesentralisasi dan keamanan smart contract di ruang kripto.",
               date: "2025",
             },
             {
               title: "Build Ai LLM Research & Modelling in Local Environment",
-              desc: "Experimenting with local LLMs for AI research and development, focusing on privacy-preserving techniques.",
+              desc: "Bereksperimen dengan LLM lokal untuk riset dan development AI, dengan fokus pada teknik yang menjaga privasi.",
               date: "2025",
             },
             {
               title: "Digital Privacy Advocacy",
-              desc: "Researching data protection laws and their implementation in Indonesian.",
+              desc: "Meneliti & mempelajari hukum perlindungan data serta penerapannya di Indonesia.",
               date: "2024",
             },
             {
               title: "System Troubleshooting",
-              desc: "Consulting for startups on scalable architecture and security hardening.",
+              desc: "Konsultasi untuk startup mengenai arsitektur yang skalabel dan penguatan keamanan.",
               date: "2023",
             },
             {
               title: "See & Learn Case Leaked Data PDN Indonesian",
-              desc: "Analyzing the implications of the PDN data leak and how to protect against similar breaches.",
+              desc: "Menganalisis implikasi kebocoran data PDN dan cara melindungi diri dari pelanggaran serupa.",
               date: "2023",
             },
             {
               title: "Search Bug Bounty Programs & Write-ups in Social Media",
-              desc: "Sharing insights and write-ups from bug bounty programs to help others learn about ethical hacking and security research.",
+              desc: "Berbagi wawasan dan write-ups dari program bug bounty untuk membantu orang lain belajar tentang hacking etis dan penelitian keamanan.",
               date: "2022",
             },
           ].map((item, i) => (
@@ -370,7 +370,7 @@ export default function Home() {
         <div className="grid gap-6">
           <h1 className="text-2xl font-bold">INFO MARKET CRYPTO INTELLIGENCE</h1>
           <p className="text-muted-foreground leading-relaxed">
-            A platform for viewing crypto market information and macroeconomic sentiment from various trusted sources. 👇
+            Sebuah platform untuk melihat informasi pasar kripto dan sentimen makroekonomi dari berbagai sumber tepercaya. 👇
           </p>
           <a
             href="https://crypto-pulse-174.preview.emergentagent.com/"
@@ -419,7 +419,9 @@ export default function Home() {
         </div>
         <h1 className="text-2xl font-bold">ASISTEN CHATBOT AI MY WEB PERSONAL—</h1>
         <p className="text-muted-foreground leading-relaxed">
-          You can use this website's AI assistant chatbot feature to make it easier to find information on Iqbaal's personal site.
+          Kamu dapat menggunakan fitur chatbot asisten AI di bawah ini untuk bertanya tentang kepribadian <a href="#" className="text-foreground hover:underline">
+            Iqbaal
+          </a>.
         </p>
         <ChatBot />
       </section>

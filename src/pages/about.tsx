@@ -8,13 +8,13 @@ export default function About() {
         </h2>
         <div className="space-y-4 text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
           <p>
-            I've spent over a decade navigating the intersection of technology and human rights. 
-            My work focuses on identifying vulnerabilities—not just in code, but in the systems 
-            that govern our digital lives.
+            Saya telah menghabiskan lebih dari satu dekade menjelajahi persimpangan antara teknologi dan hak asasi manusia.
+            Pekerjaan saya berfokus pada identifikasi kerentanan—bukan hanya dalam kode, tetapi juga dalam sistem
+            yang mengatur kehidupan digital kita.
           </p>
           <p>
-            Whether it's auditing a national database or developing privacy-preserving tools, 
-            the goal remains the same: transparency, security, and empowerment.
+            Baik itu membaca implikasi kebocoran basis data nasional atau mengembangkan alat yang menjaga 
+            privasi, tujuannya tetap sama: transparansi, keamanan, dan pemberdayaan.
           </p>
         </div>
       </section>
