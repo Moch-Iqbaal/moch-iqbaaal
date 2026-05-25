@@ -281,6 +281,7 @@ export default function Home() {
 
       {/* 2. MUSIC PLAYER */}
       <section className="flex justify-start">
+        {/* MUSIC */}
         <div className="w-full max-w-md border border-border bg-card p-4 rounded-xl">
           <div className="flex items-center justify-between mb-3">
             <div>
@@ -294,6 +295,26 @@ export default function Home() {
             <source src="/music/gata-only.mp3" type="audio/mpeg" />
             Your browser does not support the audio element.
           </audio>
+        </div>
+
+        {/* MY PRESTASI direct ke Gdrive*/}
+        <div className="ml-8 p-4 border border-border bg-card rounded-xl flex items-center gap-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold">
+            <a href="https://drive.google.com/file/d/1Xo9n8sKj2l7h5ZtqjvV8e9Y6w3R4A2/view?usp=sharing" target="_blank" rel="noopener noreferrer">
+              🏅
+            </a>
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">My Achievements</p>
+            <a
+              href="https://drive.google.com/drive/folders/1_JrsEo6D_rifI0vwicI8O84SFi8hA9wt?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-semibold tracking-wide text-foreground hover:underline"
+            >
+              Prestations &rarr;
+            </a>
+          </div>
         </div>
       </section>
 
