@@ -280,43 +280,70 @@ export default function Home() {
       </section>
 
       {/* 2. MUSIC PLAYER */}
-      <section className="flex justify-start">
-        {/* MUSIC */}
-        <div className="w-full max-w-md border border-border bg-card p-4 rounded-xl">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Now Playing</p>
-              <h3 className="text-sm font-semibold tracking-wide text-foreground">Gata Only</h3>
-              <p className="text-xs text-muted-foreground">My Personal Website Theme</p>
-            </div>
-            <div className="text-xl animate-pulse">🎵</div>
-          </div>
-          <audio controls autoPlay loop className="w-full opacity-80 hover:opacity-100 transition">
-            <source src="/music/gata-only.mp3" type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </audio>
-        </div>
+      <section className="flex flex-col lg:flex-row gap-4 lg:gap-8 justify-start w-full">
+  
+  {/* MUSIC */}
+  <div className="w-full lg:max-w-md border border-border bg-card p-4 rounded-xl">
+    <div className="flex items-center justify-between mb-3">
+      <div>
+        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+          Now Playing
+        </p>
 
-        {/* MY PRESTASI direct ke Gdrive*/}
-        <div className="ml-8 p-4 border border-border bg-card rounded-xl flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold">
-            <a href="https://drive.google.com/file/d/1Xo9n8sKj2l7h5ZtqjvV8e9Y6w3R4A2/view?usp=sharing" target="_blank" rel="noopener noreferrer">
-              🏅
-            </a>
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">My Achievements</p>
-            <a
-              href="https://drive.google.com/drive/folders/1_JrsEo6D_rifI0vwicI8O84SFi8hA9wt?usp=sharing"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-semibold tracking-wide text-foreground hover:underline"
-            >
-              Prestations &rarr;
-            </a>
-          </div>
-        </div>
-      </section>
+        <h3 className="text-sm font-semibold tracking-wide text-foreground">
+          Gata Only
+        </h3>
+
+        <p className="text-xs text-muted-foreground">
+          My Personal Website Theme
+        </p>
+      </div>
+
+      <div className="text-xl animate-pulse">🎵</div>
+    </div>
+
+    <audio
+      controls
+      autoPlay
+      loop
+      className="w-full opacity-80 hover:opacity-100 transition"
+    >
+      <source src="/music/gata-only.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+
+  {/* MY PRESTASI */}
+  <a
+    href="https://drive.google.com/drive/folders/1_JrsEo6D_rifI0vwicI8O84SFi8hA9wt?usp=sharing"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-full lg:w-auto"
+  >
+    <div className="h-full border border-border bg-card rounded-xl p-4 flex items-center gap-4 hover:scale-[1.02] transition duration-300 cursor-pointer">
+
+      <div className="w-12 h-12 min-w-[48px] bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center text-white text-xl">
+        🏅
+      </div>
+
+      <div>
+        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+          My Achievements
+        </p>
+
+        <h3 className="text-sm font-semibold tracking-wide text-foreground">
+          Prestations →
+        </h3>
+
+        <p className="text-xs text-muted-foreground">
+          Certificates & Awards
+        </p>
+      </div>
+
+    </div>
+  </a>
+
+</section>
 
       {/* 3. HEADLINE */}
       <section className="space-y-6">
