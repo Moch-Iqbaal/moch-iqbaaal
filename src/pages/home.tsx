@@ -368,24 +368,19 @@ export default function Home() {
         <div className="grid gap-8">
           {[
             {
-              title: "Blockchain Research & Development Applications",
-              desc: "Eksplorisasi aplikasi terdesentralisasi dan keamanan smart contract di ruang kripto.",
-              date: "2025",
-            },
-            {
               title: "Build Ai LLM Research & Modelling in Local Environment",
               desc: "Bereksperimen dengan LLM lokal untuk riset dan development AI, dengan fokus pada teknik yang menjaga privasi.",
+              date: "2026",
+            },
+            {
+              title: "Blockchain Research & Development Applications",
+              desc: "Eksplorisasi aplikasi terdesentralisasi dan keamanan smart contract di ruang kripto.",
               date: "2025",
             },
             {
               title: "Digital Privacy Advocacy",
               desc: "Meneliti & mempelajari hukum perlindungan data serta penerapannya di Indonesia.",
               date: "2024",
-            },
-            {
-              title: "System Troubleshooting",
-              desc: "Konsultasi untuk startup mengenai arsitektur yang skalabel dan penguatan keamanan.",
-              date: "2023",
             },
             {
               title: "See & Learn Case Leaked Data PDN Indonesian",

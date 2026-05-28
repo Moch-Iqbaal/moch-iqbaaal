@@ -69,6 +69,7 @@ export function WelcomeModal() {
         "''Senjata yang paling ampuh yaitu benda yang sedang Anda pegang saat ini.'' (MochIqball — Founder's Groups)",
       icon: "🚀",
     },
+    
   ];
 
   return (
@@ -124,7 +125,7 @@ export function WelcomeModal() {
                       rel="noopener noreferrer"
                       className="text-center px-4 py-2 border border-white/20 text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300"
                     >
-                      Facebook - (Baal Iqq)
+                      Facebook - (Muhamad Maulana Iqbal)
                     </a>
                   )}
                 </div>
