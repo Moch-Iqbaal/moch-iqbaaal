@@ -66,7 +66,7 @@ export function WelcomeModal() {
     {
       title: "Let's Collaborate!",
       description:
-        "''Senjata yang paling ampuh yaitu benda yang sedang Anda pegang saat ini.'' (MochIqball — Founder's Groups)",
+        "''Senjata yang paling ampuh yaitu benda yang sedang Anda pegang saat ini.'' (Moch Iqbal — Leader Group H.INT)",
       icon: "🚀",
     },
     

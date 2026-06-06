@@ -22,11 +22,16 @@ export function Navbar() {
             to="/"
             className={({ isActive }) =>
               cn(
-                "font-mono text-base tracking-tightest uppercase font-bold transition-all hover:opacity-100",
+                "flex items-center gap-2 font-mono text-base tracking-tightest uppercase font-bold transition-all hover:opacity-100",
                 isActive ? "opacity-100" : "opacity-60"
               )
             }
           >
+            <img
+              src="/images/photo-title.jpeg"
+              alt="M.Iqbal"
+              className="w-8 h-8 rounded-full object-cover"
+            />
             M<span className="text-cyan-500">.</span>IQBAL
           </NavLink>
 

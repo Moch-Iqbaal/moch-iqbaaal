@@ -57,8 +57,8 @@ _Dikirim via collaborate.moch-iqbal.info_`;
           <span className="italic opacity-40">TOGETHER.</span>
         </h2>
         <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
-          Saya selalu mencari proyek-proyek menarik yang menantang status quo.
-          Jika Anda memiliki proyek yang membutuhkan wawasan teknis mendalam atau audit keamanan,
+          Saya selalu menerima & mencari-cari sebuah proyek menarik yang menjadi bagian dari perubahan masa depan.
+          Jika Anda memiliki proyek yang ingin berkerja sama dengan saya atau membutuhkan wawasan seputar keamanan digital, teknologi, atau pengembangan sistem,
           mari kita bicara.
         </p>
       </section>
@@ -69,7 +69,7 @@ _Dikirim via collaborate.moch-iqbal.info_`;
           <CardHeader>
             <CardTitle className="font-mono text-sm uppercase tracking-widest">Consultancy</CardTitle>
             <CardDescription className="text-muted-foreground">
-              Security audits, architecture reviews, and performance optimization.
+              Konsultasi keamanan digital, audit sistem, dan strategi mitigasi risiko untuk individu atau organisasi.
             </CardDescription>
           </CardHeader>
         </Card>
@@ -77,7 +77,7 @@ _Dikirim via collaborate.moch-iqbal.info_`;
           <CardHeader>
             <CardTitle className="font-mono text-sm uppercase tracking-widest">Speaking</CardTitle>
             <CardDescription className="text-muted-foreground">
-              Workshops and talks on privacy, OSINT, and the future of the web.
+              Sesi berbicara tentang keamanan digital, teknologi terbaru, dan tren industri untuk konferensi, webinar, atau acara perusahaan.
             </CardDescription>
           </CardHeader>
         </Card>

@@ -20,7 +20,7 @@ const QNA = [
   },
   {
     keywords: ["kolaborasi", "collaborate", "kerja sama", "freelance", "hire", "rekrut"],
-    answer: "Iqbal terbuka untuk kolaborasi & freelance! Kunjungi halaman Collaborate di navbar untuk info lengkapnya 🤝",
+    answer: "Iqbal sangat terbuka untuk kolaborasi & freelance! Kunjungi halaman Collaborate di navbar untuk info lengkapnya 🤝",
   },
   {
     keywords: ["osint", "hacking", "security", "cyber", "siber", "privasi", "privacy", "etis"],
@@ -61,8 +61,8 @@ const QNA = [
 ];
 
 const QUICK_REPLIES = [
-  "Siapa Moch Iqbal?",
-  "Projectnya apa aja?",
+  "Iqbal?",
+  "Karya dia?",
   "Cara hubungi dia?",
   "Mau kolaborasi",
 ];
@@ -388,8 +388,8 @@ export default function Home() {
               date: "2023",
             },
             {
-              title: "Search Bug Bounty Programs & Write-ups in Social Media",
-              desc: "Berbagi wawasan dan write-ups dari program bug bounty untuk membantu orang lain belajar tentang hacking etis dan penelitian keamanan.",
+              title: "Search Bug Bounty in Application",
+              desc: "Mempelajari teknik bug bounty untuk menemukan kerentanan keamanan di aplikasi web dan mobile.",
               date: "2022",
             },
           ].map((item, i) => (
