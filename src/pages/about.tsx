@@ -60,10 +60,10 @@ export default function About() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
             "Web3/Blockchain Development",
+            "Software Development",
             "Open Source Intelligence",
             "Digital Privacy Advocacy",
             "Cryptography Research",
-            "Crisis Response",
             "Technical Writing"
           ].map((skill) => (
             <div key={skill} className="p-4 border border-border/40 font-mono text-sm">
