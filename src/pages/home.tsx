@@ -1,487 +1,431 @@
-import { title } from "process";
-import { useEffect, useState, useRef, use } from "react";
-
-const QNA = [
-  {
-    keywords: ["halo", "hai", "hi", "hello", "hey", "yo", "selamat", "p"],
-    answer: "Halo! Gue @ai_akal_akalan_iqebal 🤖 asisten virtual Moch Iqbal. Tanya aja soal dia, projectnya, skill, atau cara kontak!",
-  },
-  {
-    keywords: ["siapa", "moch", "iqbal", "lo siapa", "kamu siapa", "tentang", "about", "profil"],
-    answer: "Moch Iqbal adalah developer(web2/web3) & security advocate. Ia juga founder dari beberapa komunitas/groups yang fokus di digital privacy, OSINT, development applications dan ethical troubleshooting. Based di Indonesia 🇮🇩",
-  },
-  {
-    keywords: ["project", "karya", "portfolio", "buat apa", "crypto", "osint toolkit"],
-    answer: "Project Iqbal antara lain: Info Market Crypto Intelligence 📊, OSINT Framework Tools 🔍, dan System Troubleshooting untuk startup serta masih banyak lagi.",
-  },
-  {
-    keywords: ["kontak", "contact", "hubungi", "reach", "email", "dm"],
-    answer: "Hubungi Iqbal lewat halaman Contacts di navbar, atau DM Instagram @m.iqbaaal_3 📩",
-  },
-  {
-    keywords: ["kolaborasi", "collaborate", "kerja sama", "freelance", "hire", "rekrut"],
-    answer: "Iqbal sangat terbuka untuk kolaborasi & freelance! Kunjungi halaman Collaborate di navbar untuk info lengkapnya 🤝",
-  },
-  {
-    keywords: ["osint", "hacking", "security", "cyber", "siber", "privasi", "privacy", "etis"],
-    answer: "OSINT adalah teknik investigasi open-source yang legal & etis untuk mengumpulkan informasi dari sumber publik. Iqbal juga lumayan aktif di bidang ini 🔐",
-  },
-  {
-    keywords: ["bitcoin", "btc", "crypto", "market", "harga", "trading"],
-    answer: "Cek widget BTC di atas untuk harga live! Atau kunjungi Info Market Crypto Intelligence untuk analisis lebih lengkap 📈",
-  },
-  {
-    keywords: ["skill", "teknologi", "tech", "stack", "coding", "bahasa", "bisa apa"],
-    answer: "Stack Iqbal: TypeScript, React, Next.js, Tailwind CSS, Node.js, dan berbagai tools keamanan siber 💻",
-  },
-  {
-    keywords: ["instagram", "sosmed", "social", "media", "facebook", "follow"],
-    answer: "Follow Iqbal di Instagram: @m.iqbaaal_3 dan Facebook: Baal Iqq 🔥",
-  },
-  {
-    keywords: ["website", "web", "ini", "dibuat", "dibangun", "teknologi apa", "vite"],
-    answer: "Website ini dibangun pakai Vite + React + TypeScript + Tailwind CSS, di-deploy di Vercel ⚡",
-  },
-  {
-    keywords: ["ctf", "capture the flag", "kompetisi", "lomba"],
-    answer: "CTF (Capture The Flag) adalah kompetisi keamanan siber di mana peserta memecahkan tantangan untuk mendapatkan 'flag'.",
-  },
-  {
-    keywords: ["sql", "injection", "xss", "exploit", "vulnerability"],
-    answer: "Itu topik web security! SQL Injection & XSS adalah celah keamanan umum di web. Kamu juga bisa mempelajarinya untuk tujuan ethical hacking & bug bounty 🔎",
-  },
-  {
-    keywords: ["tools", "software", "rekomendasi", "pakai apa"],
-    answer: "Beberapa tools favorit yang biasa Saya pakai: Nmap, theHarvester, Shodan, Burp Suite, dan Maltego — semua untuk OSINT & security research 🛠️",
-  },
-  {
-    keywords: ["terima kasih", "makasih", "thanks", "thx", "mantap", "keren", "bagus"],
-    answer: "Sama-sama! 😄 Kalau ada yang lain, tanya aja ke gue — @ai_akal_akalan_iqebal siap bantu!",
-  },
-];
-
-const QUICK_REPLIES = [
-  "Iqbal?",
-  "Karya dia?",
-  "Cara hubungi dia?",
-  "Mau kolaborasi",
-];
-
-function getBotReply(input: string): string {
-  const lower = input.toLowerCase();
-  for (const item of QNA) {
-    if (item.keywords.some((k) => lower.includes(k))) {
-      return item.answer;
-    }
-  }
-  return "Hmm, gue belum bisa jawab itu 🤔 Coba tanya soal Iqbal, project, atau cara kontak dia!";
-}
-
-interface ChatMessage {
-  from: "user" | "bot";
-  text: string;
-}
+import { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
 
 // ==========================================
-// CHATBOT COMPONENT
+// TYPEWRITER HOOK — khusus buat nama di hero
 // ==========================================
 
-function ChatBot() {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      from: "bot",
-      text: "Yo! Gue @ai_akal_akalan_iqebal 🤖 Asisten virtual Moch Iqbal. Tanya apa aja soal dia — project, kontak, atau kolaborasi!",
-    },
-  ]);
-  const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const chatEndRef = useRef<HTMLDivElement>(null);
+function useTypewriter(text: string, typingSpeed = 90, deletingSpeed = 50, pauseTime = 1800) {
+  const [display, setDisplay] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isTyping]);
+    let timeout: ReturnType<typeof setTimeout>;
 
-  const sendMessage = (text: string) => {
-    if (!text.trim() || isTyping) return;
-    setMessages((prev) => [...prev, { from: "user", text: text.trim() }]);
-    setInput("");
-    setIsTyping(true);
-    setTimeout(() => {
-      const reply = getBotReply(text);
-      setMessages((prev) => [...prev, { from: "bot", text: reply }]);
-      setIsTyping(false);
-    }, 800);
-  };
+    if (!isDeleting && display === text) {
+      timeout = setTimeout(() => setIsDeleting(true), pauseTime);
+    } else if (isDeleting && display === "") {
+      timeout = setTimeout(() => setIsDeleting(false), 400);
+    } else {
+      const nextText = isDeleting
+        ? text.slice(0, display.length - 1)
+        : text.slice(0, display.length + 1);
+      timeout = setTimeout(
+        () => setDisplay(nextText),
+        isDeleting ? deletingSpeed : typingSpeed
+      );
+    }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") sendMessage(input);
-  };
+    return () => clearTimeout(timeout);
+  }, [display, isDeleting, text, typingSpeed, deletingSpeed, pauseTime]);
 
-  const clearChat = () => {
-    setMessages([{ from: "bot", text: "Chat dibersihkan! Gue @ai_akal_akalan_iqebal, siap bantu lagi 🤖" }]);
-  };
-
-  return (
-    <div className="w-full rounded-2xl overflow-hidden border border-border bg-card shadow-sm">
-
-      {/* HEADER */}
-      <div className="flex items-center justify-between px-5 py-4 bg-muted border-b border-border">
-        <div className="flex items-center gap-3">
-          <div className="relative flex-shrink-0">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-sm font-bold text-white">
-              AI
-            </div>
-            <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-background" />
-          </div>
-          <div className="min-w-0">
-            <p className="font-mono text-sm font-semibold text-foreground truncate">@ai_akal_akalan_iqebal</p>
-            <p className="font-mono text-[10px] text-cyan-500 uppercase tracking-widest">NLP · Powered by AI RBC (Rule-Based Chatbot)</p>
-          </div>
-        </div>
-        <button
-          onClick={clearChat}
-          className="flex-shrink-0 font-mono text-xs text-muted-foreground hover:text-foreground transition px-3 py-1.5 rounded-lg border border-border hover:border-foreground/30 ml-3"
-        >
-          Bersihkan
-        </button>
-      </div>
-
-      {/* MESSAGES */}
-      <div className="h-64 sm:h-72 md:h-80 overflow-y-auto px-4 py-4 space-y-4 bg-background">
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex items-end gap-2 ${msg.from === "user" ? "justify-end" : "justify-start"}`}
-          >
-            {msg.from === "bot" && (
-              <span className="text-lg mb-0.5 flex-shrink-0">🤖</span>
-            )}
-            <div
-              className={`max-w-[78%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed font-sans break-words ${
-                msg.from === "user"
-                  ? "bg-cyan-500 text-white rounded-br-sm"
-                  : "bg-muted text-foreground rounded-bl-sm border border-border"
-              }`}
-            >
-              {msg.text}
-            </div>
-          </div>
-        ))}
-
-        {/* TYPING INDICATOR */}
-        {isTyping && (
-          <div className="flex items-end gap-2 justify-start">
-            <span className="text-lg mb-0.5">🤖</span>
-            <div className="bg-muted border border-border px-4 py-3 rounded-2xl rounded-bl-sm">
-              <div className="flex gap-1 items-center">
-                {[0, 1, 2].map((i) => (
-                  <span
-                    key={i}
-                    className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
-                    style={{ animationDelay: `${i * 0.15}s` }}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-        <div ref={chatEndRef} />
-      </div>
-
-      {/* QUICK REPLIES */}
-      <div className="flex gap-2 px-4 py-3 flex-wrap bg-background border-t border-border">
-        {QUICK_REPLIES.map((qr, i) => (
-          <button
-            key={i}
-            onClick={() => sendMessage(qr)}
-            disabled={isTyping}
-            className="font-mono text-xs px-3 py-1.5 rounded-full border border-border text-muted-foreground hover:text-foreground hover:border-cyan-500/60 hover:bg-cyan-500/10 transition-all disabled:opacity-30 whitespace-nowrap"
-          >
-            {qr}
-          </button>
-        ))}
-      </div>
-
-      {/* INPUT */}
-      <div className="flex items-center gap-3 px-4 py-3 border-t border-border bg-muted">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Tanya @ai_akal_akalan_iqebal apa saja..."
-          disabled={isTyping}
-          className="flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none font-sans py-1"
-        />
-        <button
-          onClick={() => sendMessage(input)}
-          disabled={isTyping || !input.trim()}
-          className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-full bg-cyan-500 hover:bg-cyan-600 disabled:opacity-30 transition-all"
-        >
-          <svg width="14" height="14" viewBox="0 0 13 13" fill="none">
-            <path d="M1.5 6.5L11.5 1.5L7.5 6.5L11.5 11.5L1.5 6.5Z" fill="white" />
-          </svg>
-        </button>
-      </div>
-
-    </div>
-  );
+  return display;
 }
+
+// ==========================================
+// DATA
+// ==========================================
+
+const PROJECTS = [
+  {
+    title: "Private Blockchain Certificate Verification",
+    description:
+      "Sistem verifikasi sertifikat berbasis Hyperledger Fabric dengan keamanan SHA-256, X.509, dan Digital Signature. Mendukung invoke, query, dan endorsement transaksi blockchain.",
+    tech: ["Hyperledger Fabric", "Node.js", "SHA-256", "X.509", "Docker"],
+    type: "Blockchain",
+    github: "https://github.com/Moch-Iqbaal",
+    demo: null,
+    highlight: true,
+  },
+  {
+    title: "Mebel Putri Jaya",
+    description:
+      "Platform digital untuk mendukung penjualan produk furnitur secara online. Dibangun dengan React + TypeScript + Supabase CMS, deployed di Vercel.",
+    tech: ["React", "TypeScript", "Supabase", "Tailwind CSS", "Vercel"],
+    type: "Fullstack",
+    github: "https://github.com/Moch-Iqbaal",
+    demo: "https://mebel-putri-jaya.vercel.app",
+    highlight: false,
+  },
+  {
+    title: "Asrama Al-Istiqomah",
+    description:
+      "Website resmi Asrama Al-Istiqomah, Pesantren Nurul Huda Munjul — Cirebon. Static site dengan SEO optimization dan sitemap.",
+    tech: ["HTML", "CSS", "JavaScript", "Bootstrap"],
+    type: "Frontend",
+    github: "https://github.com/Moch-Iqbaal/asrama-alistiqomah",
+    demo: "https://asrama-alistiqomah.vercel.app",
+    highlight: false,
+  },
+  {
+    title: "Aplikasi Point of Sales",
+    description:
+      "Sistem kasir berbasis web untuk manajemen transaksi, stok produk, dan laporan penjualan harian.",
+    tech: ["Laravel", "PHP", "MySQL", "Bootstrap"],
+    type: "Fullstack",
+    github: "https://github.com/Moch-Iqbaal/Aplikasi-Kasir",
+    demo: null,
+    highlight: false,
+  },
+  {
+    title: "OCR Application",
+    description:
+      "Aplikasi pengenalan teks dari gambar menggunakan Optical Character Recognition.",
+    tech: ["Python", "Tesseract", "OpenCV"],
+    type: "Backend",
+    github: "https://github.com/Moch-Iqbaal",
+    demo: null,
+    highlight: false,
+  },
+  {
+    title: "H-INT Community Website",
+    description:
+      "Website komunitas dengan fitur publikasi konten dan manajemen anggota.",
+    tech: ["React", "TypeScript", "Tailwind CSS"],
+    type: "Frontend",
+    github: "https://github.com/Moch-Iqbaal/h.int",
+    demo: "https://h-int.vercel.app/",
+    highlight: false,
+  },
+];
+
+const EXPERIENCES = [
+  {
+    company: "PT. Global Inovasi Terdepan (Righjet)",
+    role: "Blockchain Developer Intern",
+    period: "2026 · 3–4 bulan",
+    points: [
+      "Mengembangkan sistem verifikasi sertifikat berbasis Blockchain Private Hyperledger Fabric.",
+      "Mengimplementasikan keamanan menggunakan SHA-256, X.509, dan Digital Signature.",
+      "Melakukan pengujian transaksi blockchain (invoke, query, endorsement) serta analisis struktur block dan ledger.",
+    ],
+  },
+  {
+    company: "Mebel Putri Jaya",
+    role: "Fullstack Developer",
+    period: "2025 · 3–4 bulan",
+    points: [
+      "Merancang dan mengembangkan platform digital untuk mendukung penjualan produk secara online.",
+      "Membangun CMS berbasis Supabase untuk manajemen produk dan konten.",
+      "Melakukan maintenance dan improvement fitur berdasarkan feedback pengguna.",
+    ],
+  },
+  {
+    company: "CV. Aksarupa Grup",
+    role: "Web Developer",
+    period: "2023 · 3–4 bulan",
+    points: [
+      "Membangun dashboard untuk tracking data klien dan penjualan, mengurangi proses manual.",
+      "Berkolaborasi dengan tim non-teknis untuk menerjemahkan kebutuhan bisnis menjadi solusi digital.",
+    ],
+  },
+];
+
+const SKILLS = {
+  Frontend: ["React", "Next.js", "TypeScript", "Tailwind CSS", "HTML/CSS"],
+  Backend: ["Node.js", "Laravel", "PHP", "Express.js"],
+  Database: ["MySQL", "PostgreSQL", "Supabase"],
+  Blockchain: ["Hyperledger Fabric", "Solidity", "SHA-256", "X.509"],
+  Tools: ["Git", "Docker", "Vercel", "Vite", "Linux"],
+};
+
+const TYPE_BADGE: Record<string, string> = {
+  Blockchain: "bg-violet-500/10 text-violet-400 border-violet-500/20",
+  Fullstack: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
+  Frontend: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  Backend: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+};
 
 // ==========================================
 // HOME PAGE
 // ==========================================
 
 export default function Home() {
-  const [btcPrice, setBtcPrice] = useState<number | null>(null);
-  const [btcChange, setBtcChange] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
+  const typedName = useTypewriter("Muhammad Maulana Iqbal");
 
   useEffect(() => {
-    window.scrollTo({top: 0, behavior: "smooth"});
+    window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
-
-  useEffect(() => {
-    const fetchBTC = async () => {
-      try {
-        const res = await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true"
-        );
-        const data = await res.json();
-        setBtcPrice(data.bitcoin.usd);
-        setBtcChange(data.bitcoin.usd_24h_change);
-      } catch (err) {
-        console.error("Gagal fetch BTC:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBTC();
-    const interval = setInterval(fetchBTC, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const isUp = btcChange !== null && btcChange >= 0;
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-24">
 
-      {/* 1. JUMBOTRON / HERO IMAGE */}
-      <section className="w-full -mx-6 md:-mx-12">
-        <div className="relative w-full h-[300px] md:h-[480px] overflow-hidden">
-          <img
-            src="/images/hero-LP.jpeg"
-            alt="Hero"
-            className="w-full h-full object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
+      {/* ── 1. HERO ── */}
+      <section className="pt-8 space-y-6 max-w-2xl">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/5 animate-in fade-in slide-in-from-top-2 duration-500">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="font-mono text-xs text-emerald-400 uppercase tracking-widest">
+            Open to work
+          </span>
         </div>
-      </section>
 
-      {/* 2. MUSIC PLAYER */}
-      <section className="flex flex-col lg:flex-row gap-4 lg:gap-8 justify-start w-full">
-  
-  {/* MUSIC */}
-  <div className="w-full lg:max-w-md border border-border bg-card p-4 rounded-xl">
-    <div className="flex items-center justify-between mb-3">
-      <div>
-        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-          Now Playing
-        </p>
-
-        <h3 className="text-sm font-semibold tracking-wide text-foreground">
-          Gata Only
-        </h3>
-
-        <p className="text-xs text-muted-foreground">
-          My Personal Website Theme
-        </p>
-      </div>
-
-      <div className="text-xl animate-pulse">🎵</div>
-    </div>
-
-    <audio
-      controls
-      autoPlay
-      loop
-      className="w-full opacity-80 hover:opacity-100 transition"
-    >
-      <source src="/music/gata-only.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
-  </div>
-
-  {/* MY PRESTASI */}
-  <a
-    href="https://drive.google.com/drive/folders/1_JrsEo6D_rifI0vwicI8O84SFi8hA9wt?usp=sharing"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="w-full lg:w-auto"
-  >
-    <div className="h-full border border-border bg-card rounded-xl p-4 flex items-center gap-4 hover:scale-[1.02] transition duration-300 cursor-pointer">
-
-      <div className="w-12 h-12 min-w-[48px] bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center text-white text-xl">
-        🏅
-      </div>
-
-      <div>
-        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-          My Achievements
-        </p>
-
-        <h3 className="text-sm font-semibold tracking-wide text-foreground">
-          Prestations →
-        </h3>
-
-        <p className="text-xs text-muted-foreground">
-          Certificates & Awards
-        </p>
-      </div>
-
-    </div>
-  </a>
-
-</section>
-
-      {/* 3. HEADLINE */}
-      <section className="space-y-6">
-        <h1 className="text-5xl md:text-7xl font-sans tracking-tightest leading-none">
-          —TROUBLE MAKER, <br />
-          <span className="font-mono text-muted-foreground italic">SYSTEM BREAKER &</span> <br />
-          <span className="text-foreground">PROBLEM SOLVER.</span>
+        <h1 className="text-4xl md:text-6xl font-sans font-bold tracking-tight leading-tight text-foreground min-h-[1.2em]">
+          {typedName}
+          <span className="inline-block w-[3px] md:w-[4px] h-[0.9em] ml-1 bg-foreground align-middle animate-pulse" />
         </h1>
-        <p className="text-xl md:text-2xl text-muted-foreground font-sans max-w-2xl leading-relaxed">
-          Saya membangun sistem untuk memahami bagaimana sistem tersebut bisa rusak. 
-          Seorang developer day to day, dan seorang advokat keamanan atas pilihan sendiri. 
-          Berfokus pada privasi digital, Blockchain/Cryptocurrency, OSINT, dan pemecahan masalah yang etis.
+
+        <p className="text-xl md:text-2xl text-muted-foreground font-light leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:200ms] [animation-fill-mode:backwards]">
+          Fullstack Developer — building reliable systems,{" "}
+          <span className="text-foreground font-medium">
+            from web interfaces to distributed ledgers.
+          </span>
         </p>
+
+        <p className="text-base text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:300ms] [animation-fill-mode:backwards]">
+          Berpengalaman di React, Laravel, dan Hyperledger Fabric. Telah mengerjakan
+          proyek nyata mulai dari dashboard bisnis, platform e-commerce, hingga sistem
+          verifikasi sertifikat berbasis blockchain.
+        </p>
+
+        <div className="flex flex-wrap gap-3 pt-2 animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:400ms] [animation-fill-mode:backwards]">
+          <a
+            href="https://github.com/Moch-Iqbaal"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium transition-all duration-300 hover:opacity-80 hover:scale-[1.04] active:scale-95"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+            GitHub
+          </a>
+          <a
+            href="https://www.linkedin.com/in/muhamad-maulana-iqbal/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium transition-all duration-300 hover:bg-muted hover:scale-[1.04] active:scale-95 text-foreground"
+          >
+            LinkedIn
+          </a>
+          <NavLink
+            to="/contacts"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium transition-all duration-300 hover:bg-muted hover:scale-[1.04] active:scale-95 text-foreground"
+          >
+            Hubungi Saya
+          </NavLink>
+
+          <a
+            href="https://drive.google.com/drive/folders/1_JrsEo6D_rifI0vwicI8O84SFi8hA9wt?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium transition-all duration-300 hover:bg-muted hover:scale-[1.04] active:scale-95 text-foreground"
+          >
+            Lihat Sertifikat Saya
+          </a>
+        </div>
       </section>
 
-      {/* 4. RECENT ACTIVITY */}
-      <section className="space-y-8">
+      {/* ── 2. EXPERIENCE ── */}
+      <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 [animation-delay:100ms] [animation-fill-mode:backwards]">
         <div className="flex items-center gap-4">
-          <span className="font-mono text-xs uppercase tracking-widest opacity-40">Recent Activity</span>
-          <div className="h-px flex-1 bg-border/40"></div>
+          <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+            Pengalaman
+          </span>
+          <div className="h-px flex-1 bg-border/40" />
         </div>
-        <div className="grid gap-8">
-          {[
-            {
-              title: "Build Ai LLM Research & Modelling in Local Environment",
-              desc: "Bereksperimen dengan LLM lokal untuk riset dan development AI, dengan fokus pada teknik yang menjaga privasi.",
-              date: "2026",
-            },
-            {
-              title: "Blockchain Research & Development Applications",
-              desc: "Eksplorisasi aplikasi terdesentralisasi dan keamanan smart contract di ruang kripto.",
-              date: "2025",
-            },
-            {
-              title: "Digital Privacy Advocacy",
-              desc: "Meneliti & mempelajari hukum perlindungan data serta penerapannya di Indonesia.",
-              date: "2024",
-            },
-            {
-              title: "See & Learn Case Leaked Data PDN Indonesian",
-              desc: "Menganalisis implikasi kebocoran data PDN dan cara melindungi diri dari pelanggaran serupa.",
-              date: "2023",
-            },
-            {
-              title: "Search Bug Bounty in Application",
-              desc: "Mempelajari teknik bug bounty untuk menemukan kerentanan keamanan di aplikasi web dan mobile.",
-              date: "2022",
-            },
-          ].map((item, i) => (
-            <div key={i} className="group cursor-pointer">
-              <div className="flex justify-between items-baseline mb-2">
-                <h3 className="text-lg font-bold group-hover:underline underline-offset-4">{item.title}</h3>
-                <span className="font-mono text-xs opacity-40">{item.date}</span>
+
+        <div className="space-y-10">
+          {EXPERIENCES.map((exp, i) => (
+            <div
+              key={i}
+              className="grid md:grid-cols-[180px_1fr] gap-1 md:gap-8 transition-transform duration-300 hover:translate-x-1 animate-in fade-in slide-in-from-bottom-2 duration-700 [animation-fill-mode:backwards]"
+              style={{ animationDelay: `${150 + i * 120}ms` }}
+            >
+              <div className="md:pt-0.5 space-y-0.5">
+                <p className="font-mono text-xs text-muted-foreground">{exp.period}</p>
               </div>
-              <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
+              <div className="space-y-2">
+                <div>
+                  <h3 className="font-semibold text-foreground">{exp.role}</h3>
+                  <p className="text-sm text-muted-foreground">{exp.company}</p>
+                </div>
+                <ul className="space-y-1.5">
+                  {exp.points.map((point, j) => (
+                    <li key={j} className="text-sm text-muted-foreground flex gap-2">
+                      <span className="text-border flex-shrink-0 mt-0.5">—</span>
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* 5. RECENT INFO MARKET */}
-      <section className="space-y-8">
-        <div className="flex items-center gap-4">
-          <span className="font-mono text-xs uppercase tracking-widest opacity-40">Recent Info Market</span>
-          <div className="h-px flex-1 bg-border/40"></div>
+      {/* ── 3. PROJECTS ── */}
+      <section className="space-y-6">
+        <div className="flex items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
+          <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+            Proyek
+          </span>
+          <div className="h-px flex-1 bg-border/40" />
         </div>
-        <div className="grid gap-6">
-          <h1 className="text-2xl font-bold">INFO MARKET CRYPTO INTELLIGENCE</h1>
-          <p className="text-muted-foreground leading-relaxed">
-            Sebuah platform untuk melihat informasi pasar kripto dan sentimen makroekonomi dari berbagai sumber tepercaya. 👇
-          </p>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          {PROJECTS.map((project, i) => (
+            <div
+              key={i}
+              className={`group relative border rounded-xl p-5 flex flex-col gap-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-3 [animation-fill-mode:backwards] ${
+                project.highlight
+                  ? "border-violet-500/40 bg-violet-500/5 hover:shadow-violet-500/10"
+                  : "border-border/40 bg-card hover:bg-muted/30 hover:shadow-foreground/5"
+              }`}
+              style={{ animationDelay: `${i * 90}ms`, animationDuration: "700ms" }}
+            >
+              {project.highlight && (
+                <span className="absolute top-4 right-4 font-mono text-[10px] uppercase tracking-widest text-violet-400 border border-violet-500/30 px-2 py-0.5 rounded-full animate-pulse">
+                  Featured
+                </span>
+              )}
+
+              <div className="space-y-1.5 pr-20">
+                <span
+                  className={`inline-block font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full border ${
+                    TYPE_BADGE[project.type]
+                  }`}
+                >
+                  {project.type}
+                </span>
+                <h3 className="font-semibold text-foreground leading-snug transition-colors duration-300 group-hover:text-foreground/80">
+                  {project.title}
+                </h3>
+              </div>
+
+              <p className="text-sm text-muted-foreground leading-relaxed flex-1">
+                {project.description}
+              </p>
+
+              <div className="flex flex-wrap gap-1.5">
+                {project.tech.map((t) => (
+                  <span
+                    key={t}
+                    className="font-mono text-xs px-2.5 py-1 rounded-lg border border-border/40 bg-muted/50 text-foreground transition-colors duration-300 group-hover:border-border"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+              <div className="flex items-center gap-3 pt-2">
+                <a
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-xs text-muted-foreground hover:text-foreground transition-all duration-300 hover:translate-x-0.5"
+                >
+                  GitHub ↗
+                </a>
+                {project.demo && (
+                  <a
+                    href={project.demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-xs text-muted-foreground hover:text-foreground transition-all duration-300 hover:translate-x-0.5"
+                  >
+                    Demo ↗
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+          
           <a
-            href="https://crypto-pulse-174.preview.emergentagent.com/"
+            href="https://github.com/Moch-Iqbaal?tab=repositories"
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-block w-full max-w-sm border border-border bg-card hover:bg-muted transition-all duration-300 rounded-xl p-5 cursor-pointer"
+            className="flex items-center justify-between w-full px-5 py-4 rounded-xl border border-dashed border-border/60 hover:border-border hover:bg-muted/30 transition-all duration-300 hover:-translate-y-1 group animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-fill-mode:backwards]"
+            style={{ animationDelay: `${PROJECTS.length * 90}ms` }}
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">₿</span>
-                <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Bitcoin</span>
-              </div>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50 group-hover:text-muted-foreground transition">
-                klik untuk lihat lebih →
-              </span>
+            <div>
+              <p className="text-sm font-medium text-foreground">
+                Lihat semua proyek di GitHub
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Masih banyak proyek lain yang belum ditampilkan di sini
+              </p>
             </div>
-            {loading ? (
-              <div className="flex items-center gap-2">
-                <div className="w-24 h-7 bg-muted rounded animate-pulse" />
-                <div className="w-14 h-4 bg-muted/50 rounded animate-pulse" />
-              </div>
-            ) : btcPrice ? (
-              <div className="flex items-end gap-3">
-                <span className="font-mono text-2xl font-bold text-foreground">
-                  ${btcPrice.toLocaleString("en-US")}
-                </span>
-                <span className={`font-mono text-sm mb-0.5 ${isUp ? "text-emerald-500" : "text-red-500"}`}>
-                  {isUp ? "▲" : "▼"} {Math.abs(btcChange!).toFixed(2)}%
-                </span>
-              </div>
-            ) : (
-              <span className="font-mono text-sm text-muted-foreground">Gagal memuat data</span>
-            )}
-            <p className="font-mono text-[10px] text-muted-foreground/50 mt-2 uppercase tracking-widest">
-              24h change · auto refresh 30s
-            </p>
+            <span className="font-mono text-sm text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all duration-300">
+              →
+            </span>
           </a>
+
         </div>
       </section>
 
-      {/* 6. CHATBOT */}
+      {/* ── 4. SKILLS ── */}
       <section className="space-y-6">
-        <div className="flex items-center gap-4">
-          <span className="font-mono text-xs uppercase tracking-widest opacity-40">AI Assistant</span>
-          <div className="h-px flex-1 bg-border/40"></div>
+        <div className="flex items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
+          <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+            Tech Stack
+          </span>
+          <div className="h-px flex-1 bg-border/40" />
         </div>
-        <h1 className="text-2xl font-bold">ASISTEN CHATBOT AI MY WEB PERSONAL—</h1>
-        <p className="text-muted-foreground leading-relaxed">
-          Kamu dapat menggunakan fitur chatbot asisten AI di bawah ini untuk bertanya tentang kepribadian <a href="#" className="text-foreground hover:underline">
-            Iqbaal
-          </a>.
-        </p>
-        <ChatBot />
+
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {Object.entries(SKILLS).map(([category, items], i) => (
+            <div
+              key={category}
+              className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-700 [animation-fill-mode:backwards]"
+              style={{ animationDelay: `${i * 80}ms` }}
+            >
+              <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground/60">
+                {category}
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {items.map((skill) => (
+                  <span
+                    key={skill}
+                    className="font-mono text-xs px-2.5 py-1 rounded-lg border border-border/40 bg-muted/50 text-foreground transition-all duration-300 hover:scale-105 hover:border-border hover:bg-muted"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
-      {/* 7. NAVIGATION LINKS */}
-      <div className="pt-12">
-        <a href="/collaborate" className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-tighter hover:gap-4 transition-all">
-          View all projects <span>&rarr;</span>
-        </a>
-        <a href="/contacts" className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-tighter hover:gap-4 transition-all ml-8">
-          Get in touch <span>&rarr;</span>
-        </a>
-        <a href="/about" className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-tighter hover:gap-4 transition-all ml-8">
-          About Me <span>&rarr;</span>
-        </a>
-      </div>
+      {/* ── 5. CTA ── */}
+      <section className="group/cta relative border border-border/40 rounded-2xl p-8 bg-card space-y-4 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
 
+        <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover/cta:opacity-100 transition-opacity duration-500 bg-[radial-gradient(600px_circle_at_50%_0%,theme(colors.foreground/8%),transparent_40%)]" />
+
+        <h2 className="relative text-xl font-semibold text-foreground">
+          Tertarik untuk berkolaborasi?
+        </h2>
+        <p className="relative text-sm text-muted-foreground leading-relaxed max-w-lg">
+          Terbuka untuk peluang fullstack development, kontrak freelance, atau diskusi
+          proyek. Kirim pesan dan saya akan membalas dalam 24 jam.
+        </p>
+        <div className="relative flex flex-wrap gap-3">
+          <NavLink
+            to="/collaborate"
+            className="group inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium transition-all duration-300 hover:opacity-90 hover:scale-[1.03] hover:shadow-lg hover:shadow-foreground/10 active:scale-95"
+          >
+            Mulai Kolaborasi
+            <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
+              →
+            </span>
+          </NavLink>
+          <NavLink
+            to="/contacts"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium transition-all duration-300 hover:bg-muted hover:scale-[1.03] active:scale-95 text-foreground"
+          >
+            Lihat Kontak
+          </NavLink>
+        </div>
+      </section>
     </div>
   );
 }
