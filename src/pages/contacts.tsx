@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, Github, Linkedin, Shield, Instagram, VoicemailIcon } from "lucide-react";
+import { Mail, Github, Linkedin, Shield, Instagram, VoicemailIcon, Facebook } from "lucide-react";
 
 const PGP_PUBLIC_KEY = `-----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -58,6 +58,7 @@ const socials = [
   { name: "Email", icon: Mail, value: "muh.maulanaiqbal18@gmail.com", href: "mailto:muh.maulanaiqbal18@gmail.com" },
   { name: "Voicemail", icon: VoicemailIcon, value: "muhm.iqbal@proton.me", href: "mailto:muhm.iqbal@proton.me" },
   { name: "GitHub", icon: Github, value: "Moch-Iqbaal", href: "https://github.com/Moch-Iqbaal" },
+  { name: "Facebook", icon: Facebook, value: "Muhammad Maulana Iqbal", href: "https://www.facebook.com/INIAKUNABAIDEH.TQ" },
   { name: "Instagram", icon: Instagram, value: "@m.iqbaaal_3", href: "https://www.instagram.com/m.iqbaaal_3/" },
   { name: "LinkedIn", icon: Linkedin, value: "Muhamad Maulana Iqbal", href: "https://www.linkedin.com/in/muhamad-maulana-iqbal/" },
   { name: "PGP Key", icon: Shield, value: "Lihat Security Key ↓", href: "#pgp" },
@@ -142,50 +143,56 @@ export default function Contacts() {
   return (
     <div className="space-y-16">
 
-      {/* HEADLINE */}
-      <section className="space-y-6">
-        <h2 className="text-4xl md:text-5xl font-sans tracking-tightest">
-          ESTABLISH <br />
-          <span className="italic opacity-40">CONTACT.</span>
-        </h2>
-        <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
-          Untuk komunikasi yang aman, silakan gunakan PGP atau hubungi Saya melalui Voicemail.
-          Pertanyaan standar sebaiknya ditangani melalui Email atau DM Instagram.
+      {/* ── HEADLINE ── */}
+      <section className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-700">
+        <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+          Kontak
+        </span>
+        <h1 className="text-4xl md:text-5xl font-sans font-bold tracking-tight text-foreground">
+          Mari Terhubung
+        </h1>
+        <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl">
+          Untuk komunikasi yang aman, silakan gunakan PGP atau hubungi Saya melalui email
+          ProtonMail. Pertanyaan standar dapat ditangani melalui Email atau DM Instagram.
         </p>
       </section>
 
-      {/* SOCIAL LINKS */}
-      <div className="space-y-1">
+      {/* ── SOCIAL LINKS ── */}
+      <div className="space-y-1 animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:100ms] [animation-fill-mode:backwards]">
         {socials.map((social) => (
           <a
             key={social.name}
             href={social.href}
-            className="flex items-center justify-between py-6 border-b border-border/40 group hover:px-2 transition-all"
+            className="flex items-center justify-between py-6 border-b border-border/40 group hover:px-2 hover:bg-muted/20 transition-all duration-300"
           >
             <div className="flex items-center gap-4">
-              <social.icon className="w-5 h-5 opacity-40 group-hover:opacity-100 transition-opacity" />
-              <span className="font-mono text-sm uppercase tracking-widest">{social.name}</span>
+              <social.icon className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors duration-300" />
+              <span className="font-mono text-sm uppercase tracking-widest text-foreground">
+                {social.name}
+              </span>
             </div>
-            <span className="text-muted-foreground group-hover:text-foreground transition-colors font-mono text-sm hidden md:block">
+            <span className="text-muted-foreground group-hover:text-foreground transition-colors duration-300 font-mono text-sm hidden md:block">
               {social.value}
             </span>
             <span className="md:hidden">
-              <social.icon className="w-4 h-4 opacity-40" />
+              <social.icon className="w-4 h-4 text-muted-foreground" />
             </span>
           </a>
         ))}
       </div>
 
-      {/* SECURITY KEY SECTION */}
-      <div className="space-y-8" id="pgp">
+      {/* ── SECURITY KEY SECTION ── */}
+      <div className="space-y-8 animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:200ms] [animation-fill-mode:backwards]" id="pgp">
 
         {/* SECTION LABEL */}
         <div className="flex items-center gap-4">
-          <span className="font-mono text-xs uppercase tracking-widest opacity-40">Security Key</span>
+          <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+            Security Key
+          </span>
           <div className="h-px flex-1 bg-border/40" />
         </div>
 
-        <h2 className="text-2xl font-bold tracking-tight">Security Key</h2>
+        <h2 className="text-2xl font-bold tracking-tight text-foreground">PGP Public Key</h2>
 
         {/* KEY INFO */}
         <div className="bg-muted/50 border border-border/40 rounded-xl p-5 font-mono text-sm space-y-2">
@@ -197,13 +204,13 @@ export default function Contacts() {
             { label: "User ID", value: "muh.maulanaiqbal18@gmail.com" },
           ].map((row) => (
             <div key={row.label} className="flex gap-4">
-              <span className="opacity-40 w-24 flex-shrink-0">{row.label}</span>
-              <span className={row.accent ? "text-cyan-500" : ""}>{row.value}</span>
+              <span className="text-muted-foreground w-24 flex-shrink-0">{row.label}</span>
+              <span className={row.accent ? "text-cyan-500" : "text-foreground"}>{row.value}</span>
             </div>
           ))}
           <div className="flex gap-4">
-            <span className="opacity-40 w-24 flex-shrink-0">Fingerprint</span>
-            <span className="break-all">
+            <span className="text-muted-foreground w-24 flex-shrink-0">Fingerprint</span>
+            <span className="break-all text-foreground">
               F7A8 1473 79DA 3323 BD6C{" "}
               <span className="text-cyan-500">EBBB</span> D516{" "}
               <span className="text-cyan-500">5FE8</span> 7135 A7D9
@@ -212,10 +219,10 @@ export default function Contacts() {
         </div>
 
         {/* PUBLIC KEY BLOCK */}
-        <div className="relative group bg-muted/50 border border-border/40 rounded-xl p-5 font-mono text-xs leading-relaxed">
+        <div className="relative group bg-muted/50 border border-border/40 rounded-xl p-5 font-mono text-xs leading-relaxed transition-colors duration-300 hover:border-border">
           <button
             onClick={handleCopyKey}
-            className="absolute top-3 right-3 font-mono text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-lg border border-border/40 bg-background text-muted-foreground hover:text-foreground hover:border-border transition-all opacity-0 group-hover:opacity-100"
+            className="absolute top-3 right-3 font-mono text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-lg border border-border/40 bg-background text-muted-foreground hover:text-foreground hover:border-border transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-105 active:scale-95"
           >
             {copied ? "✓ Copied!" : "Copy Key"}
           </button>
@@ -224,36 +231,42 @@ export default function Contacts() {
           </pre>
         </div>
 
-        <p className="font-mono text-xs text-muted-foreground/40">
+        <p className="font-mono text-xs text-muted-foreground">
           Ketika saya <em>generate new key</em>, PGP Key terbaru akan tersedia dari halaman ini.
         </p>
 
         {/* ACCORDION — CARA KIRIM PESAN */}
         <div className="space-y-3">
           <div className="flex items-center gap-4">
-            <span className="font-mono text-xs uppercase tracking-widest opacity-40">Cara Kirim Pesan Terenkripsi</span>
+            <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+              Cara Kirim Pesan Terenkripsi
+            </span>
             <div className="h-px flex-1 bg-border/40" />
           </div>
 
           <p className="text-sm text-muted-foreground">
-            Kamu bisa hubungi Saya secara private & aman dengan PGP key dan berikut langkah-langkahnya 👇
+            Kamu bisa hubungi Saya secara private &amp; aman dengan PGP key dan berikut
+            langkah-langkahnya 👇
           </p>
 
           <div className="space-y-2">
             {pgpSteps.map((step, i) => (
-              <div key={i} className="border border-border/40 rounded-xl overflow-hidden">
+              <div
+                key={i}
+                className="border border-border/40 rounded-xl overflow-hidden transition-colors duration-300 hover:border-border"
+              >
 
                 {/* TRIGGER */}
                 <button
                   onClick={() => setOpenStep(openStep === i ? null : i)}
-                  className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-muted/50 transition-all"
+                  className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-muted/50 transition-all duration-300"
                 >
                   <div className="flex items-center gap-3">
                     <span className="font-mono text-xs text-cyan-500 font-bold w-4">{i + 1}</span>
                     <span className="font-mono text-sm font-medium text-foreground">{step.title}</span>
                   </div>
                   <span
-                    className="text-muted-foreground font-mono text-xs transition-transform duration-200 flex-shrink-0 ml-4"
+                    className="text-muted-foreground font-mono text-xs transition-transform duration-300 flex-shrink-0 ml-4"
                     style={{ transform: openStep === i ? "rotate(180deg)" : "rotate(0deg)" }}
                   >
                     ↓

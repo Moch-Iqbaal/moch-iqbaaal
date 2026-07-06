@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
 
-// ==========================================
-// TYPEWRITER HOOK — khusus buat nama di hero
-// ==========================================
-
 function useTypewriter(text: string, typingSpeed = 90, deletingSpeed = 50, pauseTime = 1800) {
   const [display, setDisplay] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -30,9 +26,10 @@ function useTypewriter(text: string, typingSpeed = 90, deletingSpeed = 50, pause
 
   return display;
 }
+ 
 
 export default function About() {
-  const typedName = useTypewriter("Muhammad Maulana Iqbal");
+  const typedRole = useTypewriter("Fullstack Developer");
 
   return (
     <div className="space-y-16">
@@ -55,12 +52,11 @@ export default function About() {
 
         {/* NAME + TITLE */}
         <div className="space-y-3">
-          <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground inline-flex items-center min-h-[1.4em]">
-            {typedName}
-            <span className="inline-block w-[2px] h-[1em] ml-1 bg-muted-foreground align-middle animate-pulse" />
+          <span className="font-mono text-xs uppercase tracking-widest ">
+            Muhammad Maulana <em className="text-cyan-500">Iqbal</em>
           </span>
           <h1 className="text-4xl md:text-5xl font-sans font-bold tracking-tight text-foreground animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:180ms] [animation-fill-mode:backwards]">
-            Fullstack Developer
+            {typedRole}
           </h1>
           <p className="text-lg text-muted-foreground max-w-xl leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:260ms] [animation-fill-mode:backwards]">
             Membangun sistem yang andal — dari antarmuka web hingga infrastruktur blockchain terdistribusi.
@@ -173,7 +169,7 @@ export default function About() {
             },
             {
               title: "Security Fundamentals",
-              desc: "Kriptografi, X.509, Digital Signature, SHA-256",
+              desc: "Kriptografi, Digital Signature, SHA-256, Pentest",
             },
             {
               title: "Technical Writing",

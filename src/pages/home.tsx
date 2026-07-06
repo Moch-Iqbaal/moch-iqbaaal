@@ -51,7 +51,7 @@ const PROJECTS = [
     title: "Mebel Putri Jaya",
     description:
       "Platform digital untuk mendukung penjualan produk furnitur secara online. Dibangun dengan React + TypeScript + Supabase CMS, deployed di Vercel.",
-    tech: ["React", "TypeScript", "Supabase", "Tailwind CSS", "Vercel"],
+    tech: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS", "Vercel"],
     type: "Fullstack",
     github: "https://github.com/Moch-Iqbaal",
     demo: "https://mebel-putri-jaya.vercel.app",
@@ -71,7 +71,7 @@ const PROJECTS = [
     title: "Aplikasi Point of Sales",
     description:
       "Sistem kasir berbasis web untuk manajemen transaksi, stok produk, dan laporan penjualan harian.",
-    tech: ["Laravel", "PHP", "MySQL", "Bootstrap"],
+    tech: ["PHP", "MySQL", "Bootstrap"],
     type: "Fullstack",
     github: "https://github.com/Moch-Iqbaal/Aplikasi-Kasir",
     demo: null,
@@ -84,7 +84,7 @@ const PROJECTS = [
     tech: ["Python", "Tesseract", "OpenCV"],
     type: "Backend",
     github: "https://github.com/Moch-Iqbaal",
-    demo: null,
+    demo: "https://www.linkedin.com/posts/muhamad-maulana-iqbal_python-ocr-opencv-ugcPost-7478991284670574592-kmPD/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAEw1LGYBW2NwCHB3H1CpbxjKsoZndAaRlkw",
     highlight: false,
   },
   {
@@ -133,9 +133,9 @@ const EXPERIENCES = [
 
 const SKILLS = {
   Frontend: ["React", "Next.js", "TypeScript", "Tailwind CSS", "HTML/CSS"],
-  Backend: ["Node.js", "Laravel", "PHP", "Express.js"],
+  Backend: ["Node.js", "PHP", "Express.js"],
   Database: ["MySQL", "PostgreSQL", "Supabase"],
-  Blockchain: ["Hyperledger Fabric", "Solidity", "SHA-256", "X.509"],
+  Blockchain: ["Hyperledger Fabric", "Solidity", "SHA-256", "Digital Signature"],
   Tools: ["Git", "Docker", "Vercel", "Vite", "Linux"],
 };
 
@@ -151,6 +151,7 @@ const TYPE_BADGE: Record<string, string> = {
 // ==========================================
 
 export default function Home() {
+  const typedGreeting = useTypewriter("Halo, Saya-");
   const typedName = useTypewriter("Muhammad Maulana Iqbal");
 
   useEffect(() => {
@@ -169,6 +170,9 @@ export default function Home() {
           </span>
         </div>
 
+        <p className="text-lg md:text-xl text-muted-foreground animate-out fade-in slide-in-from-top-2 duration-100 [animation-delay:100ms] [animation-fill-mode:backwards]">
+          {typedGreeting}
+        </p>
         <h1 className="text-4xl md:text-6xl font-sans font-bold tracking-tight leading-tight text-foreground min-h-[1.2em]">
           {typedName}
           <span className="inline-block w-[3px] md:w-[4px] h-[0.9em] ml-1 bg-foreground align-middle animate-pulse" />
@@ -182,7 +186,7 @@ export default function Home() {
         </p>
 
         <p className="text-base text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:300ms] [animation-fill-mode:backwards]">
-          Berpengalaman di React, Laravel, dan Hyperledger Fabric. Telah mengerjakan
+          Berpengalaman di React, PHP, dan Hyperledger Fabric. Telah mengerjakan
           proyek nyata mulai dari dashboard bisnis, platform e-commerce, hingga sistem
           verifikasi sertifikat berbasis blockchain.
         </p>
