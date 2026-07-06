@@ -5,12 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
-    "build": "vite build",
+    "build": "vite build && tsc --noEmit ",
+    "prerender": "node prerender.mjs",
+    "build:prerender": "npm run build && npm run prerender",
     "preview": "npm run build && wrangler dev",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
     "deploy": "npm run build && wrangler deploy"
   },
+  
   "dependencies": {
     "@base-ui/react": "^1.4.1",
     "@fontsource-variable/geist": "^5.2.8",
@@ -39,6 +42,9 @@
     "@types/react": "^19.2.14",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
+    "http-server": "^14.1.1",
+    "puppeteer": "^25.3.0",
+    "serve": "^14.2.6",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",

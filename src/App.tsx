@@ -6,7 +6,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./components/theme-provider";
 import { Layout } from "./components/layout";
-import { WelcomeModal } from "./components/welcome-modal";
 import Home from "./pages/home";
 import About from "./pages/about";
 import Collaborate from "./pages/collaborate";
@@ -17,7 +16,6 @@ export default function App() {
     <ThemeProvider defaultTheme="dark" storageKey="portfolio-theme">
       <Router>
         <Layout>
-          <WelcomeModal />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
