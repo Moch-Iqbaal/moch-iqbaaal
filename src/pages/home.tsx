@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+ 
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 // ==========================================
@@ -32,9 +33,57 @@ function useTypewriter(text: string, typingSpeed = 90, deletingSpeed = 50, pause
   return display;
 }
 
-// ==========================================
-// DATA
-// ==========================================
+interface ScrambleTextProps {
+  text: string;
+  delay?: number;
+}
+
+function ScrambleText({ text, delay = 0 }: ScrambleTextProps): React.ReactElement {
+  const [displayText, setDisplayText] = useState("");
+  const chars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz1234567890@#$%&*";
+
+  useEffect(() => {
+    let isMounted = true;
+    
+    const startTimeout = setTimeout(() => {
+      let iterations = 0;
+      const originalText = text;
+      
+      const interval = setInterval(() => {
+        if (!isMounted) return;
+
+        const scrambled = originalText
+          .split("")
+          .map((char, index) => {
+            if (char === " ") return " ";  
+            if (index < iterations) {
+              return originalText[index]; 
+            }
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join("");
+
+        setDisplayText(scrambled);
+
+        if (iterations >= originalText.length) {
+          clearInterval(interval);
+        }
+  
+        iterations += 1 / 3; 
+      }, 30);
+
+      return () => clearInterval(interval);
+    }, delay);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(startTimeout);
+    };
+  }, [text, delay]);
+
+  return <>{displayText || text}</>;
+}
+
 
 const PROJECTS = [
   {
@@ -54,8 +103,8 @@ const PROJECTS = [
     tech: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS", "Vercel"],
     type: "Fullstack",
     github: "https://github.com/Moch-Iqbaal",
-    demo: "https://mebel-putri-jaya.vercel.app",
-    highlight: false,
+    demo: "https://mebel-putrijaya.vercel.app",
+    highlight: true,
   },
   {
     title: "Asrama Al-Istiqomah",
@@ -99,35 +148,31 @@ const PROJECTS = [
   },
 ];
 
-const EXPERIENCES = [
+const ACTIVITIES = [
   {
-    company: "PT. Global Inovasi Terdepan (Righjet)",
-    role: "Blockchain Developer Intern",
-    period: "2026 · 3–4 bulan",
-    points: [
-      "Mengembangkan sistem verifikasi sertifikat berbasis Blockchain Private Hyperledger Fabric.",
-      "Mengimplementasikan keamanan menggunakan SHA-256, X.509, dan Digital Signature.",
-      "Melakukan pengujian transaksi blockchain (invoke, query, endorsement) serta analisis struktur block dan ledger.",
-    ],
+    title: "Build Ai LLM Research & Modelling in Local Environment",
+    desc: "Bereksperimen dengan LLM lokal untuk riset dan development AI, dengan fokus pada teknik yang menjaga privasi.",
+    date: "2026",
   },
   {
-    company: "Mebel Putri Jaya",
-    role: "Fullstack Developer",
-    period: "2025 · 3–4 bulan",
-    points: [
-      "Merancang dan mengembangkan platform digital untuk mendukung penjualan produk secara online.",
-      "Membangun CMS berbasis Supabase untuk manajemen produk dan konten.",
-      "Melakukan maintenance dan improvement fitur berdasarkan feedback pengguna.",
-    ],
+    title: "Blockchain Research & Development Applications",
+    desc: "Eksplorisasi aplikasi terdesentralisasi dan keamanan smart contract di ruang kripto.",
+    date: "2025",
   },
   {
-    company: "CV. Aksarupa Grup",
-    role: "Web Developer",
-    period: "2023 · 3–4 bulan",
-    points: [
-      "Membangun dashboard untuk tracking data klien dan penjualan, mengurangi proses manual.",
-      "Berkolaborasi dengan tim non-teknis untuk menerjemahkan kebutuhan bisnis menjadi solusi digital.",
-    ],
+    title: "Digital Privacy Advocacy",
+    desc: "Meneliti & mempelajari hukum perlindungan data serta penerapannya di Indonesia.",
+    date: "2024",
+  },
+  {
+    title: "See & Learn Case Leaked Data PDN Indonesian",
+    desc: "Menganalisis implikasi kebocoran data PDN dan cara melindungi diri dari pelanggaran serupa.",
+    date: "2023",
+  },
+  {
+    title: "Learn Programming Language & Security Research",
+    desc: "Mempelajari dasar-dasar pemrograman, keamanan siber, dan praktik terbaik untuk pengembangan perangkat lunak yang aman.",
+    date: "2022",
   },
 ];
 
@@ -137,6 +182,7 @@ const SKILLS = {
   Database: ["MySQL", "PostgreSQL", "Supabase"],
   Blockchain: ["Hyperledger Fabric", "Solidity", "SHA-256", "Digital Signature"],
   Tools: ["Git", "Docker", "Vercel", "Vite", "Linux"],
+  Cybersecurity: ["OWASP", "Penetration Testing", "Metasploit", "Data Privacy"],
 };
 
 const TYPE_BADGE: Record<string, string> = {
@@ -146,35 +192,32 @@ const TYPE_BADGE: Record<string, string> = {
   Backend: "bg-orange-500/10 text-orange-400 border-orange-500/20",
 };
 
-// ==========================================
-// HOME PAGE
-// ==========================================
 
 export default function Home() {
-  const typedGreeting = useTypewriter("Halo, Saya-");
-  const typedName = useTypewriter("Muhammad Maulana Iqbal");
+  const typedGreeting = useTypewriter("Halo, Saya-"); 
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 
   return (
-    <div className="space-y-24">
+    <div className="space-y-24 overflow-x-hidden">
 
-      {/* ── 1. HERO ── */}
-      <section className="pt-8 space-y-6 max-w-2xl">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/5 animate-in fade-in slide-in-from-top-2 duration-500">
+      {/* ── 1. HERO (Langsung Muncul di Awal) ── */}
+      <section className="pt-8 space-y-6 max-w-2xl animate-in fade-in slide-in-from-bottom-6 duration-1000">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/5">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span className="font-mono text-xs text-emerald-400 uppercase tracking-widest">
             Open to work
           </span>
         </div>
 
-        <p className="text-lg md:text-xl text-muted-foreground animate-out fade-in slide-in-from-top-2 duration-100 [animation-delay:100ms] [animation-fill-mode:backwards]">
+        <p className="text-lg md:text-xl text-muted-foreground">
           {typedGreeting}
         </p>
+        
         <h1 className="text-4xl md:text-6xl font-sans font-bold tracking-tight leading-tight text-foreground min-h-[1.2em]">
-          {typedName}
+        <ScrambleText text="Muhammad Maulana Iqbal" delay={900} />
           <span className="inline-block w-[3px] md:w-[4px] h-[0.9em] ml-1 bg-foreground align-middle animate-pulse" />
         </h1>
 
@@ -224,52 +267,60 @@ export default function Home() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium transition-all duration-300 hover:bg-muted hover:scale-[1.04] active:scale-95 text-foreground"
           >
-            Lihat Sertifikat Saya
+            Lihat Sertifikat Saya →
           </a>
         </div>
       </section>
 
-      {/* ── 2. EXPERIENCE ── */}
-      <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 [animation-delay:100ms] [animation-fill-mode:backwards]">
+      {/*  2. Aktivitas Riwayat */} 
+      <section className="space-y-8 opacity-0 translate-y-12 transition-all duration-1000 motion-safe:intersect:opacity-100 motion-safe:intersect:translate-y-0 intersect-once">
         <div className="flex items-center gap-4">
           <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-            Pengalaman
+            Aktivitas Riwayat
           </span>
           <div className="h-px flex-1 bg-border/40" />
         </div>
 
-        <div className="space-y-10">
-          {EXPERIENCES.map((exp, i) => (
+        {/* Container Utama Timeline Bergaris Vertikal */}
+        <div className="relative border-l border-border/50 ml-2 pl-6 md:pl-8 space-y-10">
+          {ACTIVITIES.map((act, i) => (
             <div
               key={i}
-              className="grid md:grid-cols-[180px_1fr] gap-1 md:gap-8 transition-transform duration-300 hover:translate-x-1 animate-in fade-in slide-in-from-bottom-2 duration-700 [animation-fill-mode:backwards]"
-              style={{ animationDelay: `${150 + i * 120}ms` }}
+              className="group relative transition-all duration-300 opacity-0 translate-y-6 motion-safe:intersect:opacity-100 motion-safe:intersect:translate-y-0 intersect-once"
+              style={{ transitionDelay: `${i * 120}ms` }}
             >
-              <div className="md:pt-0.5 space-y-0.5">
-                <p className="font-mono text-xs text-muted-foreground">{exp.period}</p>
-              </div>
-              <div className="space-y-2">
-                <div>
-                  <h3 className="font-semibold text-foreground">{exp.role}</h3>
-                  <p className="text-sm text-muted-foreground">{exp.company}</p>
+              {/* Titik Indikator Interaktif pada Garis Timeline */}
+              <div className="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 rounded-full bg-card border-2 border-muted-foreground/40 transition-all duration-300 group-hover:border-cyan-500 group-hover:bg-cyan-400/20 group-hover:scale-125" />
+
+              {/* Kartu Aktivitas yang Bergeser saat di-Hover */}
+              <div className="space-y-3 p-4 rounded-xl border border-transparent hover:border-border/60 hover:bg-muted/20 hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] transition-all duration-300 hover:-translate-y-1">
+                
+                {/* Tahun diletakkan di atas Title */}
+                <div className="inline-block px-2 py-0.5 rounded-md bg-muted/60 border border-border/40">
+                  <span className="font-mono text-[11px] font-medium text-cyan-400">
+                    {act.date}
+                  </span>
                 </div>
-                <ul className="space-y-1.5">
-                  {exp.points.map((point, j) => (
-                    <li key={j} className="text-sm text-muted-foreground flex gap-2">
-                      <span className="text-border flex-shrink-0 mt-0.5">—</span>
-                      {point}
-                    </li>
-                  ))}
-                </ul>
+
+                {/* Judul dan Deskripsi */}
+                <div className="space-y-1.5">
+                  <h3 className="text-base font-semibold text-foreground leading-snug group-hover:text-cyan-400/90 transition-colors duration-300">
+                    {act.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl">
+                    {act.desc}
+                  </p>
+                </div>
+
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── 3. PROJECTS ── */}
-      <section className="space-y-6">
-        <div className="flex items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
+      {/* ── 3. PROYEK (Reveal On Scroll) ── */}
+      <section className="space-y-6 opacity-0 translate-y-12 transition-all duration-1000 motion-safe:intersect:opacity-100 motion-safe:intersect:translate-y-0 intersect-once">
+        <div className="flex items-center gap-4">
           <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
             Proyek
           </span>
@@ -280,12 +331,12 @@ export default function Home() {
           {PROJECTS.map((project, i) => (
             <div
               key={i}
-              className={`group relative border rounded-xl p-5 flex flex-col gap-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-3 [animation-fill-mode:backwards] ${
+              className={`group relative border rounded-xl p-5 flex flex-col gap-4 transition-all duration-500 hover:-translate-y-2 hover:shadow-lg opacity-0 translate-y-8 motion-safe:intersect:opacity-100 motion-safe:intersect:translate-y-0 intersect-once ${
                 project.highlight
                   ? "border-violet-500/40 bg-violet-500/5 hover:shadow-violet-500/10"
                   : "border-border/40 bg-card hover:bg-muted/30 hover:shadow-foreground/5"
               }`}
-              style={{ animationDelay: `${i * 90}ms`, animationDuration: "700ms" }}
+              style={{ transitionDelay: `${(i % 2) * 150}ms` }}
             >
               {project.highlight && (
                 <span className="absolute top-4 right-4 font-mono text-[10px] uppercase tracking-widest text-violet-400 border border-violet-500/30 px-2 py-0.5 rounded-full animate-pulse">
@@ -347,8 +398,8 @@ export default function Home() {
             href="https://github.com/Moch-Iqbaal?tab=repositories"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between w-full px-5 py-4 rounded-xl border border-dashed border-border/60 hover:border-border hover:bg-muted/30 transition-all duration-300 hover:-translate-y-1 group animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-fill-mode:backwards]"
-            style={{ animationDelay: `${PROJECTS.length * 90}ms` }}
+            className="flex items-center justify-between w-full px-5 py-4 rounded-xl border border-dashed border-border/60 hover:border-border hover:bg-muted/30 transition-all duration-300 hover:-translate-y-1 group opacity-0 translate-y-6 motion-safe:intersect:opacity-100 motion-safe:intersect:translate-y-0 intersect-once"
+            style={{ transitionDelay: "100ms" }}
           >
             <div>
               <p className="text-sm font-medium text-foreground">
@@ -366,9 +417,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 4. SKILLS ── */}
-      <section className="space-y-6">
-        <div className="flex items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
+      {/* ── 4. SKILLS (Reveal On Scroll) ── */}
+      <section className="space-y-6 opacity-0 translate-y-12 transition-all duration-1000 motion-safe:intersect:opacity-100 motion-safe:intersect:translate-y-0 intersect-once">
+        <div className="flex items-center gap-4">
           <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
             Tech Stack
           </span>
@@ -379,8 +430,8 @@ export default function Home() {
           {Object.entries(SKILLS).map(([category, items], i) => (
             <div
               key={category}
-              className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-700 [animation-fill-mode:backwards]"
-              style={{ animationDelay: `${i * 80}ms` }}
+              className="space-y-2 opacity-0 translate-y-6 transition-all duration-700 motion-safe:intersect:opacity-100 motion-safe:intersect:translate-y-0 intersect-once"
+              style={{ animationDelay: `${i * 100}ms` }}
             >
               <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground/60">
                 {category}
@@ -400,8 +451,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 5. CTA ── */}
-      <section className="group/cta relative border border-border/40 rounded-2xl p-8 bg-card space-y-4 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* ── 5. CTA (Reveal On Scroll) ── */}
+      <section className="group/cta relative border border-border/40 rounded-2xl p-8 bg-card space-y-4 overflow-hidden opacity-0 scale-95 transition-all duration-1000 motion-safe:intersect:opacity-100 motion-safe:intersect:scale-100 intersect-once">
 
         <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover/cta:opacity-100 transition-opacity duration-500 bg-[radial-gradient(600px_circle_at_50%_0%,theme(colors.foreground/8%),transparent_40%)]" />
 
