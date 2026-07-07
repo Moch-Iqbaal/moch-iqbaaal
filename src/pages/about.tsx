@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+// ==========================================
+// TYPEWRITER HOOK
+// ==========================================
 
 function useTypewriter(text: string, typingSpeed = 90, deletingSpeed = 50, pauseTime = 1800) {
   const [display, setDisplay] = useState("");
@@ -26,7 +30,73 @@ function useTypewriter(text: string, typingSpeed = 90, deletingSpeed = 50, pause
 
   return display;
 }
- 
+
+// ==========================================
+// REVEAL — animasi saat elemen masuk viewport
+// (pure React IntersectionObserver, sama seperti di home.tsx)
+// ==========================================
+
+interface RevealProps {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+  as?: "div" | "section";
+  variant?: "up" | "scale" | "backLeft" | "backRight";
+}
+
+function Reveal({ children, className = "", delay = 0, as = "div", variant = "up" }: RevealProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(node);
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  const Tag = as;
+
+  if (variant === "backLeft" || variant === "backRight") {
+    const animationClass = variant === "backLeft" ? "animate-back-in-left" : "animate-back-in-right";
+    return (
+      <Tag
+        ref={ref as React.RefObject<any>}
+        className={`${isVisible ? animationClass : "opacity-0"} ${className}`}
+        style={{
+          animationDelay: isVisible ? `${delay}ms` : "0ms",
+          animationFillMode: "backwards",
+        }}
+      >
+        {children}
+      </Tag>
+    );
+  }
+
+  const hiddenState = variant === "scale" ? "opacity-0 scale-95" : "opacity-0 translate-y-8";
+  const visibleState = variant === "scale" ? "opacity-100 scale-100" : "opacity-100 translate-y-0";
+
+  return (
+    <Tag
+      ref={ref as React.RefObject<any>}
+      className={`transition-all duration-700 ease-out ${isVisible ? visibleState : hiddenState} ${className}`}
+      style={{ transitionDelay: isVisible ? `${delay}ms` : "0ms" }}
+    >
+      {children}
+    </Tag>
+  );
+}
 
 export default function About() {
   const typedRole = useTypewriter("Fullstack Developer");
@@ -34,7 +104,7 @@ export default function About() {
   return (
     <div className="space-y-16">
 
-      {/* ── HERO ── */}
+      {/* ── HERO (Langsung Muncul di Awal, tidak perlu scroll-trigger) ── */}
       <section className="space-y-8">
 
         {/* FOTO */}
@@ -52,7 +122,7 @@ export default function About() {
 
         {/* NAME + TITLE */}
         <div className="space-y-3">
-          <span className="font-mono text-xs uppercase tracking-widest ">
+          <span className="font-mono text-xs uppercase tracking-widest animate-heartbeat">
             Muhammad Maulana <em className="text-cyan-500">Iqbal</em>
           </span>
           <h1 className="text-4xl md:text-5xl font-sans font-bold tracking-tight text-foreground animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:180ms] [animation-fill-mode:backwards]">
@@ -82,8 +152,8 @@ export default function About() {
         </div>
       </section>
 
-      {/* ── BIO ── */}
-      <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 [animation-fill-mode:backwards]">
+      {/* ── BIO (Reveal On Scroll — fade up) ── */}
+      <Reveal as="section" className="space-y-6">
         <div className="flex items-center gap-4">
           <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
             Tentang
@@ -114,10 +184,10 @@ export default function About() {
             arsitektur, dan pendekatan dalam setiap proyek yang saya kerjakan.
           </p>
         </div>
-      </section>
+      </Reveal>
 
-      {/* ── EDUCATION ── */}
-      <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 [animation-fill-mode:backwards]">
+      {/* ── EDUCATION (Reveal On Scroll — masuk dari kiri) ── */}
+      <Reveal as="section" variant="backLeft" className="space-y-6">
         <div className="flex items-center gap-4">
           <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
             Pendidikan
@@ -138,11 +208,11 @@ export default function About() {
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
-      {/* ── CORE EXPERTISE ── */}
-      <section className="space-y-6">
-        <div className="flex items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
+      {/* ── CORE EXPERTISE (Reveal On Scroll — tiap kartu selang-seling kiri/kanan) ── */}
+      <Reveal as="section" className="space-y-6">
+        <div className="flex items-center gap-4">
           <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
             Keahlian Utama
           </span>
@@ -176,21 +246,22 @@ export default function About() {
               desc: "Dokumentasi sistem, API docs, README",
             },
           ].map((item, i) => (
-            <div
+            <Reveal
               key={item.title}
-              className="p-4 border border-border/40 rounded-xl bg-card space-y-1 transition-all duration-300 hover:bg-muted/30 hover:-translate-y-1 hover:shadow-md animate-in fade-in slide-in-from-bottom-2 duration-700 [animation-fill-mode:backwards]"
-              style={{ animationDelay: `${i * 80}ms` }}
+              delay={Math.floor(i / 2) * 120}
+              variant={i % 2 === 0 ? "backLeft" : "backRight"}
+              className="p-4 border border-border/40 rounded-xl bg-card space-y-1 transition-all duration-300 hover:bg-muted/30 hover:-translate-y-1 hover:shadow-md"
             >
               <p className="font-mono text-sm font-medium text-foreground">{item.title}</p>
               <p className="font-mono text-xs text-muted-foreground">{item.desc}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
-      </section>
+      </Reveal>
 
-      {/* ── LINKS ── */}
-      <section className="space-y-4">
-        <div className="flex items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
+      {/* ── LINKS (Reveal On Scroll — scale in) ── */}
+      <Reveal as="section" variant="scale" className="space-y-4">
+        <div className="flex items-center gap-4">
           <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
             Temukan Saya
           </span>
@@ -217,14 +288,13 @@ export default function About() {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border/40 text-sm font-mono text-muted-foreground transition-all duration-300 hover:text-foreground hover:border-border hover:scale-[1.04] active:scale-95 animate-in fade-in slide-in-from-bottom-2 duration-700 [animation-fill-mode:backwards]"
-              style={{ animationDelay: `${i * 90}ms` }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border/40 text-sm font-mono text-muted-foreground transition-all duration-300 hover:text-foreground hover:border-border hover:scale-[1.04] active:scale-95"
             >
               {link.label} ↗
             </a>
           ))}
         </div>
-      </section>
+      </Reveal>
 
     </div>
   );

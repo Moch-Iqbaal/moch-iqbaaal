@@ -1,5 +1,4 @@
- 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 // ==========================================
@@ -36,28 +35,29 @@ function useTypewriter(text: string, typingSpeed = 90, deletingSpeed = 50, pause
 interface ScrambleTextProps {
   text: string;
   delay?: number;
+  onComplete?: () => void;
 }
 
-function ScrambleText({ text, delay = 0 }: ScrambleTextProps): React.ReactElement {
+function ScrambleText({ text, delay = 0, onComplete }: ScrambleTextProps): React.ReactElement {
   const [displayText, setDisplayText] = useState("");
   const chars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz1234567890@#$%&*";
 
   useEffect(() => {
     let isMounted = true;
-    
+
     const startTimeout = setTimeout(() => {
       let iterations = 0;
       const originalText = text;
-      
+
       const interval = setInterval(() => {
         if (!isMounted) return;
 
         const scrambled = originalText
           .split("")
           .map((char, index) => {
-            if (char === " ") return " ";  
+            if (char === " ") return " ";
             if (index < iterations) {
-              return originalText[index]; 
+              return originalText[index];
             }
             return chars[Math.floor(Math.random() * chars.length)];
           })
@@ -67,9 +67,10 @@ function ScrambleText({ text, delay = 0 }: ScrambleTextProps): React.ReactElemen
 
         if (iterations >= originalText.length) {
           clearInterval(interval);
+          onComplete?.();
         }
-  
-        iterations += 1 / 3; 
+
+        iterations += 1 / 3;
       }, 30);
 
       return () => clearInterval(interval);
@@ -83,7 +84,69 @@ function ScrambleText({ text, delay = 0 }: ScrambleTextProps): React.ReactElemen
 
   return <>{displayText || text}</>;
 }
+ 
+interface RevealProps {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+  as?: "div" | "section";
+  variant?: "up" | "scale" | "backLeft" | "backRight";
+}
 
+function Reveal({ children, className = "", delay = 0, as = "div", variant = "up" }: RevealProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(node);
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  const Tag = as;
+
+  // Varian backInLeft/backInRight pakai CSS keyframe animation (bukan transition biasa)
+  if (variant === "backLeft" || variant === "backRight") {
+    const animationClass = variant === "backLeft" ? "animate-back-in-left" : "animate-back-in-right";
+    return (
+      <Tag
+        ref={ref as React.RefObject<any>}
+        className={`${isVisible ? animationClass : "opacity-0"} ${className}`}
+        style={{
+          animationDelay: isVisible ? `${delay}ms` : "0ms",
+          animationFillMode: "backwards",
+        }}
+      >
+        {children}
+      </Tag>
+    );
+  }
+
+  const hiddenState = variant === "scale" ? "opacity-0 scale-95" : "opacity-0 translate-y-8";
+  const visibleState = variant === "scale" ? "opacity-100 scale-100" : "opacity-100 translate-y-0";
+
+  return (
+    <Tag
+      ref={ref as React.RefObject<any>}
+      className={`transition-all duration-700 ease-out ${isVisible ? visibleState : hiddenState} ${className}`}
+      style={{ transitionDelay: isVisible ? `${delay}ms` : "0ms" }}
+    >
+      {children}
+    </Tag>
+  );
+}
 
 const PROJECTS = [
   {
@@ -192,9 +255,13 @@ const TYPE_BADGE: Record<string, string> = {
   Backend: "bg-orange-500/10 text-orange-400 border-orange-500/20",
 };
 
+// ==========================================
+// HOME PAGE
+// ==========================================
 
 export default function Home() {
-  const typedGreeting = useTypewriter("Halo, Saya-"); 
+  const typedGreeting = useTypewriter("Halo, Saya-");
+  const [scrambleDone, setScrambleDone] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -215,9 +282,15 @@ export default function Home() {
         <p className="text-lg md:text-xl text-muted-foreground">
           {typedGreeting}
         </p>
-        
+
         <h1 className="text-4xl md:text-6xl font-sans font-bold tracking-tight leading-tight text-foreground min-h-[1.2em]">
-        <ScrambleText text="Muhammad Maulana Iqbal" delay={900} />
+          <span className={scrambleDone ? "animate-pulse" : ""}>
+            <ScrambleText
+              text="Muhammad Maulana Iqbal"
+              delay={900}
+              onComplete={() => setScrambleDone(true)}
+            />
+          </span>
           <span className="inline-block w-[3px] md:w-[4px] h-[0.9em] ml-1 bg-foreground align-middle animate-pulse" />
         </h1>
 
@@ -235,8 +308,8 @@ export default function Home() {
         </p>
 
         <div className="flex flex-wrap gap-3 pt-2 animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:400ms] [animation-fill-mode:backwards]">
-          <a
-            href="https://github.com/Moch-Iqbaal"
+          
+            <a href="https://github.com/Moch-Iqbaal"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium transition-all duration-300 hover:opacity-80 hover:scale-[1.04] active:scale-95"
@@ -246,8 +319,8 @@ export default function Home() {
             </svg>
             GitHub
           </a>
-          <a
-            href="https://www.linkedin.com/in/muhamad-maulana-iqbal/"
+          
+           <a href="https://www.linkedin.com/in/muhamad-maulana-iqbal/"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium transition-all duration-300 hover:bg-muted hover:scale-[1.04] active:scale-95 text-foreground"
@@ -261,8 +334,8 @@ export default function Home() {
             Hubungi Saya
           </NavLink>
 
-          <a
-            href="https://drive.google.com/drive/folders/1_JrsEo6D_rifI0vwicI8O84SFi8hA9wt?usp=sharing"
+          
+          <a  href="https://drive.google.com/drive/folders/1_JrsEo6D_rifI0vwicI8O84SFi8hA9wt?usp=sharing"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium transition-all duration-300 hover:bg-muted hover:scale-[1.04] active:scale-95 text-foreground"
@@ -272,29 +345,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/*  2. Aktivitas Riwayat */} 
-      <section className="space-y-8 opacity-0 translate-y-12 transition-all duration-1000 motion-safe:intersect:opacity-100 motion-safe:intersect:translate-y-0 intersect-once">
-        <div className="flex items-center gap-4">
-          <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-            Aktivitas Riwayat
-          </span>
-          <div className="h-px flex-1 bg-border/40" />
-        </div>
-
-        {/* Container Utama Timeline Bergaris Vertikal */}
+      {/* ── 2. AKTIVITAS RIWAYAT (Reveal On Scroll) ── */}
+      <Reveal as="section" className="space-y-8">
         <div className="relative border-l border-border/50 ml-2 pl-6 md:pl-8 space-y-10">
           {ACTIVITIES.map((act, i) => (
-            <div
-              key={i}
-              className="group relative transition-all duration-300 opacity-0 translate-y-6 motion-safe:intersect:opacity-100 motion-safe:intersect:translate-y-0 intersect-once"
-              style={{ transitionDelay: `${i * 120}ms` }}
-            >
+            <Reveal key={i} delay={i * 120} className="group relative">
               {/* Titik Indikator Interaktif pada Garis Timeline */}
               <div className="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 rounded-full bg-card border-2 border-muted-foreground/40 transition-all duration-300 group-hover:border-cyan-500 group-hover:bg-cyan-400/20 group-hover:scale-125" />
 
               {/* Kartu Aktivitas yang Bergeser saat di-Hover */}
               <div className="space-y-3 p-4 rounded-xl border border-transparent hover:border-border/60 hover:bg-muted/20 hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] transition-all duration-300 hover:-translate-y-1">
-                
+
                 {/* Tahun diletakkan di atas Title */}
                 <div className="inline-block px-2 py-0.5 rounded-md bg-muted/60 border border-border/40">
                   <span className="font-mono text-[11px] font-medium text-cyan-400">
@@ -313,13 +374,13 @@ export default function Home() {
                 </div>
 
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
-      </section>
+      </Reveal>
 
       {/* ── 3. PROYEK (Reveal On Scroll) ── */}
-      <section className="space-y-6 opacity-0 translate-y-12 transition-all duration-1000 motion-safe:intersect:opacity-100 motion-safe:intersect:translate-y-0 intersect-once">
+      <Reveal as="section" className="space-y-6">
         <div className="flex items-center gap-4">
           <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
             Proyek
@@ -329,14 +390,15 @@ export default function Home() {
 
         <div className="grid md:grid-cols-2 gap-4">
           {PROJECTS.map((project, i) => (
-            <div
+            <Reveal
               key={i}
-              className={`group relative border rounded-xl p-5 flex flex-col gap-4 transition-all duration-500 hover:-translate-y-2 hover:shadow-lg opacity-0 translate-y-8 motion-safe:intersect:opacity-100 motion-safe:intersect:translate-y-0 intersect-once ${
+              delay={Math.floor(i / 2) * 150}
+              variant={i % 2 === 0 ? "backLeft" : "backRight"}
+              className={`group relative border rounded-xl p-5 flex flex-col gap-4 transition-all duration-500 hover:-translate-y-2 hover:shadow-lg ${
                 project.highlight
                   ? "border-violet-500/40 bg-violet-500/5 hover:shadow-violet-500/10"
                   : "border-border/40 bg-card hover:bg-muted/30 hover:shadow-foreground/5"
               }`}
-              style={{ transitionDelay: `${(i % 2) * 150}ms` }}
             >
               {project.highlight && (
                 <span className="absolute top-4 right-4 font-mono text-[10px] uppercase tracking-widest text-violet-400 border border-violet-500/30 px-2 py-0.5 rounded-full animate-pulse">
@@ -372,8 +434,8 @@ export default function Home() {
                 ))}
               </div>
               <div className="flex items-center gap-3 pt-2">
-                <a
-                  href={project.github}
+
+                 <a href={project.github}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-mono text-xs text-muted-foreground hover:text-foreground transition-all duration-300 hover:translate-x-0.5"
@@ -381,8 +443,8 @@ export default function Home() {
                   GitHub ↗
                 </a>
                 {project.demo && (
-                  <a
-                    href={project.demo}
+
+                   <a href={project.demo}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-mono text-xs text-muted-foreground hover:text-foreground transition-all duration-300 hover:translate-x-0.5"
@@ -391,34 +453,34 @@ export default function Home() {
                   </a>
                 )}
               </div>
-            </div>
+            </Reveal>
           ))}
-          
-          <a
-            href="https://github.com/Moch-Iqbaal?tab=repositories"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-between w-full px-5 py-4 rounded-xl border border-dashed border-border/60 hover:border-border hover:bg-muted/30 transition-all duration-300 hover:-translate-y-1 group opacity-0 translate-y-6 motion-safe:intersect:opacity-100 motion-safe:intersect:translate-y-0 intersect-once"
-            style={{ transitionDelay: "100ms" }}
-          >
-            <div>
-              <p className="text-sm font-medium text-foreground">
-                Lihat semua proyek di GitHub
-              </p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Masih banyak proyek lain yang belum ditampilkan di sini
-              </p>
-            </div>
-            <span className="font-mono text-sm text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all duration-300">
-              →
-            </span>
-          </a>
 
+          <Reveal delay={100} className="w-full">
+            
+             <a href="https://github.com/Moch-Iqbaal?tab=repositories"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between w-full px-5 py-4 rounded-xl border border-dashed border-border/60 hover:border-border hover:bg-muted/30 transition-all duration-300 hover:-translate-y-1 group"
+            >
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  Lihat semua proyek di GitHub
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Masih banyak proyek lain yang belum ditampilkan di sini
+                </p>
+              </div>
+              <span className="font-mono text-sm text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all duration-300">
+                →
+              </span>
+            </a>
+          </Reveal>
         </div>
-      </section>
+      </Reveal>
 
       {/* ── 4. SKILLS (Reveal On Scroll) ── */}
-      <section className="space-y-6 opacity-0 translate-y-12 transition-all duration-1000 motion-safe:intersect:opacity-100 motion-safe:intersect:translate-y-0 intersect-once">
+      <Reveal as="section" className="space-y-6">
         <div className="flex items-center gap-4">
           <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
             Tech Stack
@@ -428,11 +490,7 @@ export default function Home() {
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
           {Object.entries(SKILLS).map(([category, items], i) => (
-            <div
-              key={category}
-              className="space-y-2 opacity-0 translate-y-6 transition-all duration-700 motion-safe:intersect:opacity-100 motion-safe:intersect:translate-y-0 intersect-once"
-              style={{ animationDelay: `${i * 100}ms` }}
-            >
+            <Reveal key={category} delay={i * 100} className="space-y-2">
               <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground/60">
                 {category}
               </p>
@@ -446,14 +504,17 @@ export default function Home() {
                   </span>
                 ))}
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
-      </section>
+      </Reveal>
 
       {/* ── 5. CTA (Reveal On Scroll) ── */}
-      <section className="group/cta relative border border-border/40 rounded-2xl p-8 bg-card space-y-4 overflow-hidden opacity-0 scale-95 transition-all duration-1000 motion-safe:intersect:opacity-100 motion-safe:intersect:scale-100 intersect-once">
-
+      <Reveal
+        as="section"
+        variant="scale"
+        className="group/cta relative border border-border/40 rounded-2xl p-8 bg-card space-y-4 overflow-hidden"
+      >
         <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover/cta:opacity-100 transition-opacity duration-500 bg-[radial-gradient(600px_circle_at_50%_0%,theme(colors.foreground/8%),transparent_40%)]" />
 
         <h2 className="relative text-xl font-semibold text-foreground">
@@ -480,7 +541,7 @@ export default function Home() {
             Lihat Kontak
           </NavLink>
         </div>
-      </section>
+      </Reveal>
     </div>
   );
 }
