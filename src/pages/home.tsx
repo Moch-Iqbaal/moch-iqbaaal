@@ -230,7 +230,7 @@ const ACTIVITIES = [
   {
     title: "See & Learn Case Leaked Data PDN Indonesian",
     desc: "Menganalisis implikasi kebocoran data PDN dan cara melindungi diri dari pelanggaran serupa.",
-    date: "2023",
+    date: "2024",
   },
   {
     title: "Learn Programming Language & Security Research",
