@@ -158,6 +158,8 @@ const PROJECTS = [
     github: "https://github.com/Moch-Iqbaal",
     demo: null,
     highlight: true,
+    image: "/images/projects/private-blockchain.webp",
+    alt: "Tampilan Ijazah On-Chain untuk mengunggah dan mengecek sertifikat di blockchain",
   },
   {
     title: "Mebel Putri Jaya",
@@ -168,6 +170,8 @@ const PROJECTS = [
     github: "https://github.com/Moch-Iqbaal",
     demo: "https://mebel-putrijaya.vercel.app",
     highlight: true,
+    image: "/images/projects/mebel-putri-jaya.webp",
+    alt: "Beranda toko online Mebel Putri Jaya",
   },
   {
     title: "Asrama Al-Istiqomah",
@@ -178,6 +182,8 @@ const PROJECTS = [
     github: "https://github.com/Moch-Iqbaal/asrama-alistiqomah",
     demo: "https://asrama-alistiqomah.vercel.app",
     highlight: false,
+    image: "/images/projects/asrama-al-istiqomah.webp",
+    alt: "Beranda website Asrama Al-Istiqomah",
   },
   {
     title: "Aplikasi Point of Sales",
@@ -188,6 +194,8 @@ const PROJECTS = [
     github: "https://github.com/Moch-Iqbaal/Aplikasi-Kasir",
     demo: null,
     highlight: false,
+    image: "/images/projects/aplikasi-kasir.webp",
+    alt: "Halaman produk Aplikasi Kasir",
   },
   {
     title: "OCR Application",
@@ -198,6 +206,8 @@ const PROJECTS = [
     github: "https://github.com/Moch-Iqbaal",
     demo: "https://www.linkedin.com/posts/muhamad-maulana-iqbal_python-ocr-opencv-ugcPost-7478991284670574592-kmPD/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAEw1LGYBW2NwCHB3H1CpbxjKsoZndAaRlkw",
     highlight: false,
+    image: "/images/projects/ocr-application.webp",
+    alt: "Aplikasi OCR Sederhana setelah mengekstrak teks dari gambar",
   },
   {
     title: "H-INT Community Website",
@@ -208,6 +218,32 @@ const PROJECTS = [
     github: "https://github.com/Moch-Iqbaal/h.int",
     demo: "https://h-int.vercel.app/",
     highlight: false,
+    image: "/images/projects/h-int.webp",
+    alt: "Beranda website komunitas H-INT",
+  },
+  {
+    title: "Hydration Tracker",
+    description:
+      "Web app untuk mencatat asupan air harian dan target hidrasi, biar terbiasa minum cukup tiap hari. Proyek tim UAS.",
+    tech: ["React", "Vite", "Netlify Functions", "Supabase"],
+    type: "Fullstack",
+    github: "https://github.com/februferdiansyah02-rgb/hyrdretion_treker",
+    demo: "https://hyrdretiontreker.netlify.app",
+    highlight: false,
+    image: "/images/projects/hydration-tracker.webp",
+    alt: "Dashboard Hydration Tracker dengan progres minum 1000 ml",
+  },
+  {
+    title: "Oleh-Oleh Pemalang",
+    description:
+      "Marketplace oleh-oleh UMKM Pemalang: katalog produk, toko terverifikasi, detail produk, dan panel admin/penjual.",
+    tech: ["Laravel", "MySQL", "Tailwind CSS"],
+    type: "Fullstack",
+    github: "https://github.com/Moch-Iqbaal/oleh-oleh_khas-pemalang-marketplace",
+    demo: "https://oleh-oleh-khas-pemalang-marketplace.wasmer.app",
+    highlight: false,
+    image: "/images/projects/oleh-oleh-pemalang.webp",
+    alt: "Beranda marketplace Oleh-Oleh Pemalang",
   },
 ];
 
@@ -259,6 +295,35 @@ const TYPE_BADGE: Record<string, string> = {
 // HOME PAGE
 // ==========================================
 
+function ProjectCover({ src, alt }: { src: string; alt: string }) {
+  const base = src.replace(/\.webp$/, "");
+  const sizes = "(max-width: 767px) calc(100vw - 3rem), 380px";
+  return (
+    <picture className="block">
+      <source
+        type="image/avif"
+        srcSet={`${base}-640.avif 640w, ${base}-960.avif 960w`}
+        sizes={sizes}
+      />
+      <source
+        type="image/webp"
+        srcSet={`${base}-640.webp 640w, ${base}-960.webp 960w`}
+        sizes={sizes}
+      />
+      <img
+        src={`${base}-960.webp`}
+        alt={alt}
+        width={1280}
+        height={720}
+        loading="lazy"
+        decoding="async"
+        sizes={sizes}
+        className="aspect-video w-full object-cover rounded-t-xl"
+      />
+    </picture>
+  );
+}
+
 export default function Home() {
   const typedGreeting = useTypewriter("Halo, Saya-");
   const [scrambleDone, setScrambleDone] = useState(false);
@@ -294,8 +359,8 @@ export default function Home() {
           <span className="inline-block w-[3px] md:w-[4px] h-[0.9em] ml-1 bg-foreground align-middle animate-pulse" />
         </h1>
 
-        <p className="text-xl md:text-2xl text-muted-foreground font-light leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:200ms] [animation-fill-mode:backwards]">
-          Fullstack Developer — building reliable systems,{" "}
+        <p className="max-w-full text-balance text-xl md:text-2xl text-muted-foreground font-light leading-snug md:leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:200ms] [animation-fill-mode:backwards]">
+          Fullstack Developer & Cybersecurity Enthusiast — building reliable systems,{" "}
           <span className="text-foreground font-medium">
             from web interfaces to distributed ledgers.
           </span>
@@ -394,19 +459,23 @@ export default function Home() {
               key={i}
               delay={Math.floor(i / 2) * 150}
               variant={i % 2 === 0 ? "backLeft" : "backRight"}
-              className={`group relative border rounded-xl p-5 flex flex-col gap-4 transition-all duration-500 hover:-translate-y-2 hover:shadow-lg ${
+              className={`group relative border rounded-xl overflow-hidden flex flex-col transition-all duration-500 hover:-translate-y-2 hover:shadow-lg ${
                 project.highlight
                   ? "border-violet-500/40 bg-violet-500/5 hover:shadow-violet-500/10"
                   : "border-border/40 bg-card hover:bg-muted/30 hover:shadow-foreground/5"
               }`}
             >
-              {project.highlight && (
-                <span className="absolute top-4 right-4 font-mono text-[10px] uppercase tracking-widest text-violet-400 border border-violet-500/30 px-2 py-0.5 rounded-full animate-pulse">
-                  Featured
-                </span>
-              )}
+              <div className="relative">
+                <ProjectCover src={project.image} alt={project.alt} />
+                {project.highlight && (
+                  <span className="absolute top-3 right-3 font-mono text-[10px] uppercase tracking-widest text-violet-200 border border-violet-400/40 bg-black/55 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                    Featured
+                  </span>
+                )}
+              </div>
 
-              <div className="space-y-1.5 pr-20">
+              <div className="p-5 flex flex-col gap-4 flex-1">
+              <div className="space-y-1.5">
                 <span
                   className={`inline-block font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full border ${
                     TYPE_BADGE[project.type]
@@ -452,6 +521,7 @@ export default function Home() {
                     Demo ↗
                   </a>
                 )}
+              </div>
               </div>
             </Reveal>
           ))}
