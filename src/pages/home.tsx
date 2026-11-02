@@ -295,32 +295,71 @@ const TYPE_BADGE: Record<string, string> = {
 // HOME PAGE
 // ==========================================
 
-function ProjectCover({ src, alt }: { src: string; alt: string }) {
+function ProjectCover({
+  src,
+  alt,
+  href,
+  label,
+  ariaLabel,
+}: {
+  src: string;
+  alt: string;
+  href: string;
+  label: string;
+  ariaLabel: string;
+}) {
   const base = src.replace(/\.webp$/, "");
   const sizes = "(max-width: 767px) calc(100vw - 3rem), 380px";
   return (
-    <picture className="block">
-      <source
-        type="image/avif"
-        srcSet={`${base}-640.avif 640w, ${base}-960.avif 960w`}
-        sizes={sizes}
-      />
-      <source
-        type="image/webp"
-        srcSet={`${base}-640.webp 640w, ${base}-960.webp 960w`}
-        sizes={sizes}
-      />
-      <img
-        src={`${base}-960.webp`}
-        alt={alt}
-        width={1280}
-        height={720}
-        loading="lazy"
-        decoding="async"
-        sizes={sizes}
-        className="aspect-video w-full object-cover rounded-t-xl"
-      />
-    </picture>
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={ariaLabel}
+      className="group/cover relative block overflow-hidden rounded-t-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/80"
+    >
+      <picture className="block">
+        <source
+          type="image/avif"
+          srcSet={`${base}-640.avif 640w, ${base}-960.avif 960w`}
+          sizes={sizes}
+        />
+        <source
+          type="image/webp"
+          srcSet={`${base}-640.webp 640w, ${base}-960.webp 960w`}
+          sizes={sizes}
+        />
+        <img
+          src={`${base}-960.webp`}
+          alt={alt}
+          width={1280}
+          height={720}
+          loading="lazy"
+          decoding="async"
+          sizes={sizes}
+          className="aspect-video w-full object-cover rounded-t-xl transition-transform duration-500 ease-out group-hover/cover:scale-[1.04] group-focus-visible/cover:scale-[1.04]"
+        />
+      </picture>
+      <span className="pointer-events-none absolute inset-0 flex items-end bg-gradient-to-t from-black/60 via-black/20 to-black/10 p-3 opacity-0 transition-opacity duration-300 group-hover/cover:opacity-100 group-focus-visible/cover:opacity-100">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 font-mono text-[11px] uppercase tracking-widest text-white backdrop-blur-sm">
+          {label}
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M7 17 17 7" />
+            <path d="M8 7h9v9" />
+          </svg>
+        </span>
+      </span>
+    </a>
   );
 }
 
@@ -466,9 +505,19 @@ export default function Home() {
               }`}
             >
               <div className="relative">
-                <ProjectCover src={project.image} alt={project.alt} />
+                <ProjectCover
+                  src={project.image}
+                  alt={project.alt}
+                  href={project.demo ?? project.github}
+                  label={project.demo ? "Lihat demo" : "Lihat GitHub"}
+                  ariaLabel={
+                    project.demo
+                      ? `Buka demo ${project.title}`
+                      : `Buka GitHub ${project.title}`
+                  }
+                />
                 {project.highlight && (
-                  <span className="absolute top-3 right-3 font-mono text-[10px] uppercase tracking-widest text-violet-200 border border-violet-400/40 bg-black/55 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                  <span className="pointer-events-none absolute top-3 right-3 z-10 font-mono text-[10px] uppercase tracking-widest text-violet-200 border border-violet-400/40 bg-black/55 backdrop-blur-sm px-2 py-0.5 rounded-full">
                     Featured
                   </span>
                 )}
