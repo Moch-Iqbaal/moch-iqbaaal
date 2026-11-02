@@ -1,7 +1,10 @@
 import { NavLink } from "react-router-dom";
-import { ModeToggle } from "./mode-toggle";
 import { cn } from "@/src/lib/utils";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
+
+const ModeToggle = lazy(() =>
+  import("./mode-toggle").then((mod) => ({ default: mod.ModeToggle })),
+);
 
 const links = [
   { name: "About", path: "/about" },
@@ -27,11 +30,24 @@ export function Navbar() {
               )
             }
           >
-            <img
-              src="/images/photo-title.jpeg"
-              alt="M.Iqbal"
-              className="w-8 h-8 rounded-full object-cover"
-            />
+            <picture>
+              <source
+                type="image/avif"
+                srcSet="/images/photo-title-64.avif 1x, /images/photo-title-128.avif 2x"
+              />
+              <source
+                type="image/webp"
+                srcSet="/images/photo-title-64.webp 1x, /images/photo-title-128.webp 2x"
+              />
+              <img
+                src="/images/photo-title-128.webp"
+                alt="M.Iqbal"
+                width={32}
+                height={32}
+                decoding="async"
+                className="w-8 h-8 rounded-full object-cover"
+              />
+            </picture>
             M<span className="text-cyan-500">.</span>IQBAL
           </NavLink>
 
@@ -64,7 +80,9 @@ export function Navbar() {
 
           {/* RIGHT SIDE */}
           <div className="flex items-center gap-3">
-            <ModeToggle />
+            <Suspense fallback={<div className="size-8" aria-hidden="true" />}>
+              <ModeToggle />
+            </Suspense>
 
             {/* HAMBURGER MOBILE */}
             <button

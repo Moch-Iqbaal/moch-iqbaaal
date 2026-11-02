@@ -1,21 +1,18 @@
-import React from "react";
-import { motion } from "motion/react";
+import { Suspense, lazy } from "react";
 import { Navbar } from "./navbar";
-import PencilCursor from "./PencilCursor";
+
+const PencilCursor = lazy(() => import("./PencilCursor"));
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen text-foreground selection:bg-primary selection:text-primary-foreground">
       <Navbar />
-      <motion.main
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="pt-32 pb-20 px-6 md:px-12 max-w-4xl"
-      >
+      <main className="pt-32 pb-20 px-6 md:px-12 max-w-4xl animate-in fade-in slide-in-from-bottom-5 duration-500 ease-out [animation-fill-mode:both]">
         {children}
-      </motion.main>
-      <PencilCursor />
+      </main>
+      <Suspense fallback={null}>
+        <PencilCursor />
+      </Suspense>
     </div>
   );
 }

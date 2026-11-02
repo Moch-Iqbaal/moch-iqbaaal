@@ -53,6 +53,8 @@ function GravityStarsBackground({
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
   const animRef = React.useRef<number | null>(null);
+  const lastFrameRef = React.useRef(0);
+  const stepRef = React.useRef(1);
   const starsRef = React.useRef<Particle[]>([]);
   const mouseRef = React.useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [dpr, setDpr] = React.useState(1);
@@ -70,7 +72,13 @@ function GravityStarsBackground({
 
   const initStars = React.useCallback(
     (w: number, h: number) => {
-      starsRef.current = Array.from({ length: starsCount }).map(() => {
+      const mobile =
+        typeof window !== 'undefined' &&
+        window.matchMedia('(max-width: 767px)').matches;
+      const count = mobile
+        ? Math.max(16, Math.round(starsCount * 0.35))
+        : starsCount;
+      starsRef.current = Array.from({ length: count }).map(() => {
         const angle = Math.random() * Math.PI * 2;
         const speed = movementSpeed * (0.5 + Math.random() * 0.5);
         return {
@@ -102,19 +110,25 @@ function GravityStarsBackground({
     const container = containerRef.current;
     if (!canvas || !container) return;
     const rect = container.getBoundingClientRect();
-    const nextDpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+    const mobile = window.matchMedia('(max-width: 767px)').matches;
+    const nextDpr = mobile
+      ? 1
+      : Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
     setDpr(nextDpr);
     canvas.width = Math.max(1, Math.floor(rect.width * nextDpr));
     canvas.height = Math.max(1, Math.floor(rect.height * nextDpr));
     canvas.style.width = `${rect.width}px`;
     canvas.style.height = `${rect.height}px`;
     setCanvasSize({ width: rect.width, height: rect.height });
-    if (starsRef.current.length === 0) {
+    const desired = mobile
+      ? Math.max(16, Math.round(starsCount * 0.35))
+      : starsCount;
+    if (starsRef.current.length !== desired) {
       initStars(rect.width, rect.height);
     } else {
       redistributeStars(rect.width, rect.height);
     }
-  }, [initStars, redistributeStars]);
+  }, [initStars, redistributeStars, starsCount]);
 
   const handlePointerMove = React.useCallback(
     (e: React.MouseEvent | React.TouchEvent) => {
@@ -240,8 +254,9 @@ function GravityStarsBackground({
         }
       }
 
-      p.x += p.vx;
-      p.y += p.vy;
+      const step = stepRef.current || 1;
+      p.x += p.vx * step;
+      p.y += p.vy * step;
 
       p.vx += (Math.random() - 0.5) * 0.001;
       p.vy += (Math.random() - 0.5) * 0.001;
@@ -269,30 +284,55 @@ function GravityStarsBackground({
     (ctx: CanvasRenderingContext2D) => {
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       const color = readColor();
+      ctx.fillStyle = color;
+      ctx.shadowColor = color;
       for (const p of starsRef.current) {
-        ctx.save();
-        ctx.shadowColor = color;
-        ctx.shadowBlur = glowIntensity * (p.glowMultiplier || 1) * 2;
         ctx.globalAlpha = p.opacity;
-        ctx.fillStyle = color;
+        ctx.shadowBlur = glowIntensity * (p.glowMultiplier || 1) * 2;
         ctx.beginPath();
         ctx.arc(p.x * dpr, p.y * dpr, p.size * dpr, 0, Math.PI * 2);
         ctx.fill();
-        ctx.restore();
       }
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
     },
     [dpr, glowIntensity, readColor],
   );
 
-  const animate = React.useCallback(() => {
+  const paintFrame = React.useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     updateStars();
     drawStars(ctx);
-    animRef.current = requestAnimationFrame(animate);
   }, [updateStars, drawStars]);
+
+  const animate = React.useCallback(
+    (now: number) => {
+      const reduced = window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches;
+      if (document.hidden) return;
+      if (reduced) {
+        stepRef.current = 1;
+        paintFrame();
+        return;
+      }
+      const last = lastFrameRef.current;
+      const elapsed = last ? now - last : 33;
+      // Cap near 30fps. Step keeps travel speed close to a 60fps loop.
+      if (last && elapsed < 32) {
+        animRef.current = requestAnimationFrame(animate);
+        return;
+      }
+      lastFrameRef.current = now;
+      stepRef.current = Math.min(2.5, Math.max(1, elapsed / 16.67));
+      paintFrame();
+      animRef.current = requestAnimationFrame(animate);
+    },
+    [paintFrame],
+  );
 
   React.useEffect(() => {
     resizeCanvas();
@@ -335,13 +375,41 @@ function GravityStarsBackground({
   ]);
 
   React.useEffect(() => {
-    if (animRef.current) cancelAnimationFrame(animRef.current);
-    animRef.current = requestAnimationFrame(animate);
-    return () => {
+    const reducedQuery = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    );
+
+    const stop = () => {
       if (animRef.current) cancelAnimationFrame(animRef.current);
       animRef.current = null;
     };
-  }, [animate]);
+
+    const start = () => {
+      stop();
+      lastFrameRef.current = 0;
+      animRef.current = requestAnimationFrame(animate);
+    };
+
+    const onVisibility = () => {
+      if (document.hidden || reducedQuery.matches) stop();
+      else start();
+    };
+
+    if (reducedQuery.matches) {
+      stepRef.current = 1;
+      paintFrame();
+    } else {
+      start();
+    }
+
+    document.addEventListener('visibilitychange', onVisibility);
+    reducedQuery.addEventListener('change', onVisibility);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      reducedQuery.removeEventListener('change', onVisibility);
+      stop();
+    };
+  }, [animate, paintFrame]);
 
   return (
     <div

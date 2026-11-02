@@ -111,11 +111,19 @@ export default function About() {
         <div className="relative w-52 h-52 group animate-in fade-in zoom-in-95 duration-700">
           <div className="absolute -inset-1 rounded-full border border-border/40" />
           <div className="relative w-full h-full rounded-full overflow-hidden">
-            <img
-              src="/images/my-photo.jpeg"
-              alt="Muhammad Maulana Iqbal"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
+            <picture>
+              <source type="image/avif" srcSet="/images/my-photo-416.avif" />
+              <source type="image/webp" srcSet="/images/my-photo-416.webp" />
+              <img
+                src="/images/my-photo-416.webp"
+                alt="Muhammad Maulana Iqbal"
+                width={208}
+                height={208}
+                fetchPriority="high"
+                decoding="async"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            </picture>
             <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
           </div>
         </div>

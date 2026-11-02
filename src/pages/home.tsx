@@ -295,6 +295,35 @@ const TYPE_BADGE: Record<string, string> = {
 // HOME PAGE
 // ==========================================
 
+function ProjectCover({ src, alt }: { src: string; alt: string }) {
+  const base = src.replace(/\.webp$/, "");
+  const sizes = "(max-width: 767px) calc(100vw - 3rem), 380px";
+  return (
+    <picture className="block">
+      <source
+        type="image/avif"
+        srcSet={`${base}-640.avif 640w, ${base}-960.avif 960w`}
+        sizes={sizes}
+      />
+      <source
+        type="image/webp"
+        srcSet={`${base}-640.webp 640w, ${base}-960.webp 960w`}
+        sizes={sizes}
+      />
+      <img
+        src={`${base}-960.webp`}
+        alt={alt}
+        width={1280}
+        height={720}
+        loading="lazy"
+        decoding="async"
+        sizes={sizes}
+        className="aspect-video w-full object-cover rounded-t-xl"
+      />
+    </picture>
+  );
+}
+
 export default function Home() {
   const typedGreeting = useTypewriter("Halo, Saya-");
   const [scrambleDone, setScrambleDone] = useState(false);
@@ -437,15 +466,7 @@ export default function Home() {
               }`}
             >
               <div className="relative">
-                <img
-                  src={project.image}
-                  alt={project.alt}
-                  width={1280}
-                  height={720}
-                  loading="lazy"
-                  decoding="async"
-                  className="aspect-video w-full object-cover rounded-t-xl"
-                />
+                <ProjectCover src={project.image} alt={project.alt} />
                 {project.highlight && (
                   <span className="absolute top-3 right-3 font-mono text-[10px] uppercase tracking-widest text-violet-200 border border-violet-400/40 bg-black/55 backdrop-blur-sm px-2 py-0.5 rounded-full">
                     Featured
