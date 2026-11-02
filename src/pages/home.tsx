@@ -359,8 +359,8 @@ export default function Home() {
           <span className="inline-block w-[3px] md:w-[4px] h-[0.9em] ml-1 bg-foreground align-middle animate-pulse" />
         </h1>
 
-        <p className="text-xl md:text-2xl text-muted-foreground font-light leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:200ms] [animation-fill-mode:backwards]">
-          Fullstack Developer — building reliable systems,{" "}
+        <p className="max-w-full text-balance text-xl md:text-2xl text-muted-foreground font-light leading-snug md:leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:200ms] [animation-fill-mode:backwards]">
+          Fullstack Developer & Cybersecurity Enthusiast — building reliable systems,{" "}
           <span className="text-foreground font-medium">
             from web interfaces to distributed ledgers.
           </span>

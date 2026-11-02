@@ -99,7 +99,7 @@ function Reveal({ children, className = "", delay = 0, as = "div", variant = "up
 }
 
 export default function About() {
-  const typedRole = useTypewriter("Fullstack Developer");
+  const typedRole = useTypewriter("Fullstack Developer & Cybersecurity Enthusiast");
 
   return (
     <div className="space-y-16">
@@ -133,7 +133,7 @@ export default function About() {
           <span className="font-mono text-xs uppercase tracking-widest animate-heartbeat">
             Muhammad Maulana <em className="text-cyan-500">Iqbal</em>
           </span>
-          <h1 className="text-4xl md:text-5xl font-sans font-bold tracking-tight text-foreground animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:180ms] [animation-fill-mode:backwards]">
+          <h1 className="max-w-full text-balance break-words text-3xl sm:text-4xl md:text-5xl font-sans font-bold tracking-tight leading-tight text-foreground animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:180ms] [animation-fill-mode:backwards]">
             {typedRole}
           </h1>
           <p className="text-lg text-muted-foreground max-w-xl leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:260ms] [animation-fill-mode:backwards]">
