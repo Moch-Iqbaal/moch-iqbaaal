@@ -87,13 +87,14 @@ function ScrambleText({ text, delay = 0, onComplete }: ScrambleTextProps): React
  
 interface RevealProps {
   children: React.ReactNode;
+  id?: string;
   className?: string;
   delay?: number;
   as?: "div" | "section";
   variant?: "up" | "scale" | "backLeft" | "backRight";
 }
 
-function Reveal({ children, className = "", delay = 0, as = "div", variant = "up" }: RevealProps) {
+function Reveal({ children, id, className = "", delay = 0, as = "div", variant = "up" }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -123,6 +124,7 @@ function Reveal({ children, className = "", delay = 0, as = "div", variant = "up
     return (
       <Tag
         ref={ref as React.RefObject<any>}
+        id={id}
         className={`${isVisible ? animationClass : "opacity-0"} ${className}`}
         style={{
           animationDelay: isVisible ? `${delay}ms` : "0ms",
@@ -140,6 +142,7 @@ function Reveal({ children, className = "", delay = 0, as = "div", variant = "up
   return (
     <Tag
       ref={ref as React.RefObject<any>}
+      id={id}
       className={`transition-all duration-700 ease-out ${isVisible ? visibleState : hiddenState} ${className}`}
       style={{ transitionDelay: isVisible ? `${delay}ms` : "0ms" }}
     >
@@ -367,6 +370,13 @@ export default function Home() {
   const typedGreeting = useTypewriter("Halo, Saya-");
   const [scrambleDone, setScrambleDone] = useState(false);
 
+  const scrollToProjects = () => {
+    document.getElementById("projects")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
@@ -405,11 +415,14 @@ export default function Home() {
           </span>
         </p>
 
-        <p className="text-base text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:300ms] [animation-fill-mode:backwards]">
-          Berpengalaman di React, PHP, dan Hyperledger Fabric. Telah mengerjakan
-          proyek nyata mulai dari dashboard bisnis, platform e-commerce, hingga sistem
-          verifikasi sertifikat berbasis blockchain.
-        </p>
+        <button
+          type="button"
+          onClick={scrollToProjects}
+          className="inline-flex items-center gap-2 self-start rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-all duration-300 hover:scale-[1.04] hover:bg-muted active:scale-95 animate-in fade-in slide-in-from-bottom-3 [animation-delay:300ms] [animation-fill-mode:backwards]"
+        >
+          Lihat Projek
+          <span aria-hidden="true">↓</span>
+        </button>
 
         <div className="flex flex-wrap gap-3 pt-2 animate-in fade-in slide-in-from-bottom-3 duration-700 [animation-delay:400ms] [animation-fill-mode:backwards]">
           
@@ -484,7 +497,7 @@ export default function Home() {
       </Reveal>
 
       {/* ── 3. PROYEK (Reveal On Scroll) ── */}
-      <Reveal as="section" className="space-y-6">
+      <Reveal id="projects" as="section" className="scroll-mt-24 space-y-6">
         <div className="flex items-center gap-4">
           <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
             Proyek
